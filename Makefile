@@ -6,15 +6,15 @@
 #    By: alafranc <alafranc@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/23 14:11:52 by alafranc          #+#    #+#              #
-#    Updated: 2021/10/07 13:23:47 by alafranc         ###   ########lyon.fr    #
+#    Updated: 2021/11/05 14:26:41 by alafranc         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			= containers
+NAME			= ft_containers
 
 FILES			= main.cpp
 
-INC_FILES		=
+INC_FILES		= vector.hpp iterator.hpp
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
 
@@ -26,7 +26,8 @@ BIN				= $(SRC:%.cpp=$(BIN_PATH)/%.o)
 
 CC				= clang++
 RM				= rm -rf
-FLAGS			= -Wall -Wextra -Werror -std=c++98
+FLAGS			= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
+AR				= ar rcs
 
 all:  			${NAME}
 
@@ -36,17 +37,20 @@ init:
 
 $(BIN): $(BIN_PATH)/%.o: %.cpp ${INC}
 				@mkdir -p $(@D)
-				@$(CC) $(FLAGS) -c $< -o $@
+				$(CC) $(FLAGS) -c $< -o $@
 
 ${NAME}: 		init ${BIN}
-				@${CC} ${FLAGS} ${BIN} -I ${INC_PATH} -o ${NAME}
+				${CC} ${FLAGS} ${BIN} -I ${INC_PATH} -o ${NAME}
 
 test:			${NAME}
 
+test:
+				make -C ft_containers_test all
+
 clean:
-				@${RM} ${BIN_PATH}			
+				@${RM} ${BIN_PATH}
 
 fclean:			clean
 				@${RM} ${NAME}
-				
+
 re:				fclean all
