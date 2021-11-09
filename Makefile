@@ -45,7 +45,7 @@ ${NAME}: 		init ${BIN}
 test:			${NAME}
 
 test:
-				make -C ft_containers_test all
+				make -C ../ft_containers_test all
 
 clean:
 				@${RM} ${BIN_PATH}
