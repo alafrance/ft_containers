@@ -6,6 +6,8 @@
 #define FT_CONTAINERS_VECTOR_HPP
 #include <iostream>
 #include "iterator.hpp"
+#include "metafunctions/metafunctions.hpp"
+
 namespace ft {
 	template<typename T, class Alloc = std::allocator<T> >
 	class vector {
@@ -15,21 +17,15 @@ namespace ft {
 		class random_access_iterator : virtual public iterator<bidirectional_iterator_tag, T> {
 		public:
 			/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
-			random_access_iterator() {std::cout << "Default constructor" << std::endl;};
+			random_access_iterator() {};
 
-			~random_access_iterator() {std::cout << "Destructor called" << std::endl;};
+			~random_access_iterator() {};
 			random_access_iterator(typename random_access_iterator::pointer a) { // FOR TEST
-				std::cout << "T constructor called" << std::endl;
 				_p = a;
 			}
 
 			random_access_iterator(random_access_iterator const &src) {
-				std::cout << "copy-constructible" << std::endl;
 				*this = src;
-			}
-			void display() {
-				T a = *_p;
-				std::cout << a << std::endl;
 			}
 
 			/* -------  OPERATOR OVERLOAD ------- */
@@ -88,28 +84,28 @@ namespace ft {
 			_alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
 
 		// FILL
-		explicit vector (size_type n, const value_type& val = value_type(),
-						 const allocator_type& alloc = allocator_type())
-						 : _size(n), _capacity(n), _alloc(alloc) {
+		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+				: _alloc(alloc), _size(n), _capacity(n) {
+			std::cout << "int\n";
 			_array = _alloc.allocate(_size);
-			for (int i = 0; i < _size ; i++) {
-				 _alloc.construct(_array[i], val);
+			for (size_type i = 0; i < _size ; i++) {
+				_alloc.construct(&_array[i], val);
 			}
 		}
 
 		// RANGE
 		template <class InputIterator>
-		vector (InputIterator first, InputIterator last,
-				const allocator_type& alloc = allocator_type())
-				: _size(0), _capacity(0), _alloc(alloc){
+		vector (InputIterator first, typename enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type  last, const allocator_type& alloc = allocator_type())
+				: _alloc(alloc), _size(0), _capacity(0) {
 			for (InputIterator it = first; it < last; it++) {
 				_size++;
 			}
+			std::cout << "input Iterator\n";
 			_capacity = _size;
 			_array = _alloc.allocate(_size);
 			size_type i = 0;
-			for (first; first != last ; first++) {
-				_alloc.construct(_array[i++], *first);
+			for (InputIterator it = first; first != last ; first++) {
+				_alloc.construct(&_array[i++], *it);
 			}
 		}
 
