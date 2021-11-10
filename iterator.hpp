@@ -5,6 +5,7 @@
 #ifndef FT_CONTAINERS_ITERATOR_HPP
 #define FT_CONTAINERS_ITERATOR_HPP
 namespace ft {
+	// TODO Add iterators_traits
 	struct random_access_iterator_tag {};
 	struct bidirectional_iterator_tag {};
 

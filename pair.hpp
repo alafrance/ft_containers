@@ -24,30 +24,37 @@ namespace ft {
 			this->second = pr.second;
 			return (*this);
 		}
-//		bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-//		{ return lhs.first==rhs.first && lhs.second==rhs.second; }
-//
-//		bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-//		{ return !(lhs==rhs); }
-//
-//		bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-//		{ return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
-//
-//		bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-//		{ return !(rhs<lhs); }
-//
-//		bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-//		{ return rhs<lhs; }
-//
-//		bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-//		{ return !(lhs<rhs); }
+		bool operator== (ft::pair<T1,T2> const& inst) {
+			return this->first==inst.first && this->second==inst.second;
+		}
+
+		bool operator!= (ft::pair<T1,T2>& inst) {
+			return !(*this==inst);
+		}
+
+		bool operator<  (ft::pair<T1,T2>& inst){
+			return this->first<inst.first ||
+					(!(inst.first<this->first) && this->second<inst.second);
+		}
+
+		bool operator<= (ft::pair<T1,T2>& inst){
+			return !(inst<*this);
+		}
+
+		bool operator>  (ft::pair<T1,T2>& inst) {
+			return inst<*this;
+		}
+
+		bool operator>= (ft::pair<T1,T2>& inst) {
+			return !(*this<inst);
+		}
 	public:
 		T1 first;
 		T2 second;
 	};
+	template<typename T1, typename T2>
 	pair<T1, T2> make_pair (T1 x, T2 y) {
-		ft::pair<T1, T2> pair(x, y);
-		return pair;
+		return pair<T1, T2>(x, y);
 	}
 
 }

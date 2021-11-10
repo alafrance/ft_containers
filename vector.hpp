@@ -20,6 +20,7 @@ namespace ft {
 			random_access_iterator() {};
 
 			~random_access_iterator() {};
+
 			random_access_iterator(typename random_access_iterator::pointer a) { // FOR TEST
 				_p = a;
 			}
@@ -33,29 +34,44 @@ namespace ft {
 				_p = inst._p;
 				return (*this);
 			}
+
 			bool operator==(random_access_iterator inst) {
 				return (_p == inst._p);
 			}
-			//		bool operator!=(bidirectional_iterator<T> const& inst) {
-			//			return (_p != inst._p);
-			//		}
-			//		random_access_iterator<T>::value_type operator* (){
-			//			return *_p;
-			//		}
+
+			random_access_iterator &operator--() { //--a
+				_p--;
+				return (*this);
+			}
+
+			random_access_iterator operator--(int) {//a--
+				random_access_iterator tmp(*this);
+				this->_p--;
+				return (tmp);
+			}
+
+			random_access_iterator &operator++() { //--a
+				_p++;
+				return (*this);
+			}
+
+			random_access_iterator operator++(int) {//a--
+				random_access_iterator tmp(*this);
+				this->_p++;
+				return (tmp);
+			}
+
+			typename random_access_iterator::value_type operator* (){
+				return *_p;
+			}
+
+//			bool operator!=(random_access_iterator const& inst) {
+//				return (_p != inst._p);
+//			}
+
 			//		typename ft::bidirectional_iterator<T>::pointer operator-> () {
 			//			return _p;
 			//		}
-
-			//		bidirectional_iterator<T> &operator++() { // ++it
-			//			_p++;
-			//			return (*this);
-			//		}
-			//		bidirectional_iterator<T> operator++(int) { // it++
-			//			bidirectional_iterator<T> const& tmp(*this);
-			//			_p++;
-			//			return (tmp);
-			//		}
-
 		private:
 			typename random_access_iterator::pointer _p;
 		};
@@ -94,9 +110,11 @@ namespace ft {
 		}
 
 		// RANGE
+		//TODO: - InputIterator doesn't work with pointers
 		template <class InputIterator>
-		vector (InputIterator first, typename enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type  last, const allocator_type& alloc = allocator_type())
+		vector (InputIterator first,  typename std::enable_if<!std::is_integral<InputIterator>::type, InputIterator>::type last, const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _size(0), _capacity(0) {
+//					std::cout << ft::is_integral<InputIterator>::value << std::endl;
 			for (InputIterator it = first; it < last; it++) {
 				_size++;
 			}
