@@ -23,6 +23,7 @@ namespace ft {
 		typedef false_type type;
 	};
 
+
 	template<>
 	struct is_integral<bool> {
 		static const bool value = true;

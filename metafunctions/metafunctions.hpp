@@ -29,7 +29,6 @@ namespace ft{
 
 	};
 
-
 	// ------- EQUAL / LEXICOGRAPHICAL COMPARE -------
 
 	template <class InputIterator1, class InputIterator2>
