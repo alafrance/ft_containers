@@ -14,7 +14,7 @@ namespace ft {
 	public:
 		const char *what () const throw ()
 		{
-			return "Your grade is too high (grade >= 1)";
+			return "Out of range dude\n";
 		}
 	};
 	template<typename T, class Alloc = std::allocator<T> >
@@ -22,7 +22,7 @@ namespace ft {
 		/* ----------------------------------------------------------------
 								RANDOM ACCESS ITERATOR
 		---------------------------------------------------------------- */
-		class random_access_iterator : virtual public iterator<random_access_iterator_tag, T> {
+		class random_access_iterator : virtual public iterators_traits< iterator<random_access_iterator_tag, T> > {
 		public:
 			/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 
@@ -31,7 +31,7 @@ namespace ft {
 
 			~random_access_iterator() {};
 
-			random_access_iterator(typename random_access_iterator::pointer a) { // FOR TEST
+			random_access_iterator(typename random_access_iterator::pointer a) {
 				_p = a;
 			}
 
@@ -105,24 +105,24 @@ namespace ft {
 			}
 
 			/* 		------- ARITHMETIC arithmetic ------- */
-			typename random_access_iterator::iterator operator+ (int a){
+			random_access_iterator operator+ (int a){
 				return _p + a;
 			}
 
-			typename random_access_iterator::iterator operator- (int a){
+			random_access_iterator operator- (int a){
 				return _p - a;
 			}
 
-			typename random_access_iterator::difference_type operator- (typename random_access_iterator::iterator it){
+			typename random_access_iterator::difference_type operator- (random_access_iterator it){
 				return _p - it._p;
 			}
 
-			typename random_access_iterator::iterator operator+= (int a){
+			random_access_iterator operator+= (int a){
 				_p += a;
 				return (*this);
 			}
 
-			typename random_access_iterator::iterator operator-= (int a){
+			random_access_iterator operator-= (int a){
 				_p -= a;
 				return (*this);
 			}
@@ -133,6 +133,7 @@ namespace ft {
 		private:
 			typename random_access_iterator::pointer _p;
 		};
+
 		/* ----------------------------------------------------------------
 							VECTOR SOURCE CODE
 		---------------------------------------------------------------- */
@@ -146,9 +147,8 @@ namespace ft {
 		typedef typename Alloc::pointer pointer;
 		typedef typename Alloc::const_pointer const_pointer;
 		typedef random_access_iterator iterator;
-		//		typedef '?' const_iterator;
+		typedef random_access_iterator const_iterator;
 		//		typedef '?' reverse_iterator;
-		//		typedef '?' const_reverse_iterator;
 		typedef ptrdiff_t difference_type;
 		typedef size_t size_type;
 
@@ -160,7 +160,6 @@ namespace ft {
 		// FILL
 		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _size(n), _capacity(capacity(n)) {
-			std::cout << "int\n";
 			_array = _alloc.allocate(_capacity);
 			for (size_type i = 0; i < _size ; i++) {
 				_alloc.construct(&_array[i], val);
@@ -177,7 +176,6 @@ namespace ft {
 			for (InputIterator it = first; it < last; it++) {
 				_size++;
 			}
-			std::cout << "input Iterator\n";
 			_capacity = capacity(_size);
 			_array = _alloc.allocate(_capacity);
 			size_type i = 0;
@@ -213,7 +211,15 @@ namespace ft {
 			return (&_array[0]);
 		}
 
+		const_iterator begin() const{
+			return (&_array[0]);
+		}
+
 		iterator end() {
+			return (&_array[_size]);
+		}
+
+		const_iterator end() const{
 			return (&_array[_size]);
 		}
 
@@ -348,7 +354,7 @@ namespace ft {
 
 		void push_back(const value_type& val) {
 			reserve(_size + 1);
-			_alloc.construct(&_array[_size++], val);
+			_alloc.construct(&_array[_size++ - 1], val);
 		}
 
 		void pop_back() {
@@ -363,7 +369,9 @@ namespace ft {
 				_alloc.destroy(--it);
 			}
 			_alloc.construct(it, val);
+			return (position);
 		}
+
 		void insert (iterator position, size_type n, const value_type& val) {
 			for (int i = 0; i < n; i++) {
 				position = insert(position, val);
@@ -371,8 +379,9 @@ namespace ft {
 		}
 		template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last) {
-			for (first; first < last; first++) {
+			while (first < last) {
 				position = insert(position, *first);
+				first++;
 			}
 		}
 
@@ -392,6 +401,7 @@ namespace ft {
 			while(--p)
 				erase(first);
 			return (first);
+
 		}
 
 		void swap(vector& x) {
@@ -405,6 +415,31 @@ namespace ft {
 			return (_alloc);
 		}
 
+		friend bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+			if (lhs.size() != rhs.size())
+				return false;
+			return (equal(lhs.begin(), lhs.end(), rhs.begin()));
+		}
+
+		friend bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+			return (!(lhs == rhs));
+		}
+
+		friend bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+			return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		}
+
+		friend bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+			return (!(rhs < lhs));
+		}
+
+		friend bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+			return (rhs < lhs);
+		}
+
+		friend bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+			return (!(lhs < rhs));
+		}
 
 		/* -------  UTILITY ------- */
 	private:
@@ -415,10 +450,15 @@ namespace ft {
 		/* -------  ATTRIBUTES ------- */
 	private:
 		Alloc	_alloc;
-		typename random_access_iterator::pointer	_array;
+		typename random_access_iterator::pointer _array;
 		size_type _size;
 		size_type _capacity;
 	};
+
+	template< class T, class Alloc >
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y) {
+		x.swap(y);
+	}
 }
 
 #endif //FT_CONTAINERS_VECTOR_HPP
