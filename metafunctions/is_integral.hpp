@@ -10,122 +10,49 @@ namespace ft {
 	// ----- TRUE AND FALSE TYPE -----
 	struct false_type {
 		static const bool value = false;
+		typedef false_type type;
+
+		operator bool() { return false; }
 	};
 
 	struct true_type {
 		static const bool value = true;
+		typedef true_type type;
+		operator bool() { return true; }
 	};
 
 	template<typename T>
-	struct is_integral {
-		static const bool value = false;
-		typedef bool value_type;
-		typedef false_type type;
-	};
-
-
+	struct is_integral : false_type {};
 	template<>
-	struct is_integral<bool> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<bool>: true_type {};
 	template<>
-	struct is_integral<char> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<char>: true_type {};
 	template<>
-	struct is_integral<char16_t> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<char16_t>: true_type {};
 	template<>
-	struct is_integral<char32_t> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<char32_t>: true_type {};
 	template<>
-	struct is_integral<wchar_t> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
+	struct is_integral<wchar_t>: true_type {};
 	template<>
-	struct is_integral<signed char> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<signed char>: true_type {};
 	template<>
-	struct is_integral<short int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
+	struct is_integral<short int>: true_type {};
 	template<>
-	struct is_integral<int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<int>: true_type {};
 	template<>
-	struct is_integral<long int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<long int>: true_type {};
 	template<>
-	struct is_integral<long long int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<long long int>: true_type {};
 	template<>
-	struct is_integral<unsigned char> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<unsigned char>: true_type {};
 	template<>
-	struct is_integral<unsigned short int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<unsigned short int>: true_type {};
 	template<>
-	struct is_integral<unsigned int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<unsigned int>: true_type {};
 	template<>
-	struct is_integral<unsigned long int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
-
+	struct is_integral<unsigned long int>: true_type {};
 	template<>
-	struct is_integral<unsigned long long int> {
-		static const bool value = true;
-		typedef bool value_type;
-		typedef true_type type;
-	};
+	struct is_integral<unsigned long long int>: true_type {};
 };
 
 #endif //FT_CONTAINERS_IS_INTEGRAL_HPP

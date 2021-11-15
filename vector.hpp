@@ -19,6 +19,7 @@ namespace ft {
 	};
 	template<typename T, class Alloc = std::allocator<T> >
 	class vector {
+
 		/* ----------------------------------------------------------------
 								RANDOM ACCESS ITERATOR
 		---------------------------------------------------------------- */
@@ -27,7 +28,7 @@ namespace ft {
 			/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 
 				/* -------  CANONICAL FORM ------- */
-			random_access_iterator() {};
+			random_access_iterator(): _p(0) {};
 
 			~random_access_iterator() {};
 
@@ -47,27 +48,27 @@ namespace ft {
 
 			/* 		-------  RELATIONAL ------- */
 
-			bool operator==(random_access_iterator inst) {
+			bool operator==(random_access_iterator inst) const{
 				return (_p == inst._p);
 			}
 
-			bool operator!=(random_access_iterator inst) {
+			bool operator!=(random_access_iterator inst) const{
 				return (_p != inst._p);
 			}
 
-			bool operator<(random_access_iterator inst) {
+			bool operator<(random_access_iterator inst) const{
 				return (_p < inst._p);
 			}
 
-			bool operator<=(random_access_iterator inst) {
+			bool operator<=(random_access_iterator inst) const{
 				return (_p <= inst._p);
 			}
 
-			bool operator>(random_access_iterator inst) {
+			bool operator>(random_access_iterator inst) const{
 				return (_p > inst._p);
 			}
 
-			bool operator>=(random_access_iterator inst) {
+			bool operator>=(random_access_iterator inst) const{
 				return (_p >= inst._p);
 			}
 
@@ -96,41 +97,45 @@ namespace ft {
 			}
 
 			/* 		------- REFERENCE / DEREFERENCE ------- */
-			typename random_access_iterator::value_type operator* (){
+			typename random_access_iterator::reference operator* () const{
 				return *_p;
 			}
 
-			typename random_access_iterator::value_type operator-> (){
-				return *_p;
+			typename random_access_iterator::pointer operator-> () const {
+				return _p;
 			}
 
 			/* 		------- ARITHMETIC arithmetic ------- */
-			random_access_iterator operator+ (int a){
+			friend random_access_iterator operator+ (typename random_access_iterator::difference_type a, random_access_iterator const& rhs) {
+				return rhs._p + a;
+			}
+			random_access_iterator operator+ (typename random_access_iterator::difference_type a) const{
 				return _p + a;
 			}
 
-			random_access_iterator operator- (int a){
+			random_access_iterator operator- (typename random_access_iterator::difference_type a) const{
 				return _p - a;
 			}
 
-			typename random_access_iterator::difference_type operator- (random_access_iterator it){
+			typename random_access_iterator::difference_type operator- (random_access_iterator it) const{
 				return _p - it._p;
 			}
 
-			random_access_iterator operator+= (int a){
+			random_access_iterator operator+= (typename random_access_iterator::difference_type a){
 				_p += a;
 				return (*this);
 			}
 
-			random_access_iterator operator-= (int a){
+			random_access_iterator operator-= (typename random_access_iterator::difference_type a){
 				_p -= a;
 				return (*this);
 			}
 
-			typename random_access_iterator::value_type operator[] (int a){
+			typename random_access_iterator::value_type operator[] (typename random_access_iterator::difference_type a) const{
 				return (_p[a]);
 			}
-		private:
+
+		protected:
 			typename random_access_iterator::pointer _p;
 		};
 
@@ -168,11 +173,13 @@ namespace ft {
 
 		// RANGE
 
-
 		template <class InputIterator>
-		vector (InputIterator first, typename std::enable_if<!std::is_integral<InputIterator>::type, InputIterator>::type last, const allocator_type& alloc = allocator_type())
+		vector (InputIterator first,
+		  		typename enable_if< (is_same<InputIterator, typename random_access_iterator::pointer>::value
+		  		|| is_same<InputIterator, random_access_iterator>::value)
+		  		&& !ft::is_integral<InputIterator>::value,
+		  			InputIterator>::type last, const allocator_type& alloc = allocator_type())
 				: _alloc(alloc), _size(0), _capacity(0) {
-//					std::cout << ft::is_integral<InputIterator>::value << std::endl;
 			for (InputIterator it = first; it < last; it++) {
 				_size++;
 			}
@@ -268,7 +275,6 @@ namespace ft {
 					}
 					_alloc.deallocate(_array, _capacity);
 					_capacity = capacity(n);
-					_size = n;
 					_array = tmpMemory;
 				}
 		}
@@ -324,7 +330,9 @@ namespace ft {
 
 		/* -------  MODIFIERS ------- */
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last) {
+		void assign (InputIterator first, typename ft::enable_if<(is_same<InputIterator, typename random_access_iterator::pointer>::value ||
+						is_same<InputIterator, random_access_iterator>::value) && !ft::is_integral<InputIterator>::value,
+							InputIterator>::type last) {
 			size_type count = 0;
 			for (InputIterator it = first; it < last; it++)
 				count++;
@@ -354,7 +362,7 @@ namespace ft {
 
 		void push_back(const value_type& val) {
 			reserve(_size + 1);
-			_alloc.construct(&_array[_size++ - 1], val);
+			_alloc.construct(&_array[_size++], val);
 		}
 
 		void pop_back() {
@@ -373,12 +381,15 @@ namespace ft {
 		}
 
 		void insert (iterator position, size_type n, const value_type& val) {
-			for (int i = 0; i < n; i++) {
+			for (size_type i = 0; i < n; i++) {
 				position = insert(position, val);
 			}
 		}
 		template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator last) {
+		void insert (iterator position, InputIterator first,
+					 	typename enable_if<(is_same<InputIterator, typename random_access_iterator::pointer>::value ||
+					 		is_same<InputIterator, random_access_iterator>::value) && !is_integral<InputIterator>::value,
+							 	InputIterator>::type last) {
 			while (first < last) {
 				position = insert(position, *first);
 				first++;

@@ -5,10 +5,8 @@
 #ifndef FT_CONTAINERS_METAFUNCTIONS_HPP
 #define FT_CONTAINERS_METAFUNCTIONS_HPP
 #include "is_integral.hpp"
-//#include "pair.hpp"
 namespace ft{
 	template <class U, class V>
-
 	// ----- IS SAME -----
 	struct is_same {
 		static const bool value = false;

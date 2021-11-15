@@ -48,6 +48,90 @@ namespace ft {
 		typedef random_access_iterator_tag iterator_category;
 	};
 
+	/* ----------------------------------------------------------------
+						REVERSE ITERATOR
+	---------------------------------------------------------------- */
+	template <typename Iterator>
+	class reverse_iterator: public iterators_traits<Iterator> {
+	public:
+		typedef Iterator iterator_type;
+		typedef typename iterators_traits<Iterator>::reference reference;
+		typedef typename iterators_traits<Iterator>::difference_type difference_type;
+		typedef typename iterators_traits<Iterator>::pointer pointer;
+		reverse_iterator(): current() {}
+
+		~reverse_iterator() {}
+
+		explicit reverse_iterator (Iterator it): current(it) {}
+
+		reverse_iterator (const reverse_iterator<Iterator>& rev_it): current(rev_it.current) {}
+
+		Iterator base() const {
+			return (current);
+		}
+
+		reference operator*() const {
+			Iterator tmp(current);
+			return (*--tmp);
+		}
+
+		// ******* OPERATOR + *******
+		reverse_iterator operator+ (difference_type n) const {
+			return (current - n);
+		}
+
+		reverse_iterator &operator++() { //++a
+			--current;
+			return (*this);
+		}
+
+		reverse_iterator operator++(int) {//a++
+			reverse_iterator<Iterator> tmp(current);
+			current--;
+			return (tmp);
+		}
+
+		reverse_iterator& operator+= (difference_type n) {
+			current -= n;
+			return (*this);
+		}
+
+		// ******* OPERATOR - *******
+		reverse_iterator operator- (difference_type n) const {
+			return (current + n);
+		}
+
+		reverse_iterator &operator--() { //--a
+			++current;
+			return (*this);
+		}
+
+		reverse_iterator operator--(int) {//a--
+			reverse_iterator<Iterator> tmp(current);
+
+			current++;
+			return (tmp);
+		}
+
+		reverse_iterator& operator-= (difference_type n) {
+			current += n;
+			return (*this);
+		}
+
+		pointer operator->() const {
+			return &(operator*());
+		}
+
+		reference operator[] (difference_type n) const {
+			return (current[n]);
+		}
+
+		friend bool operator!= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs) {
+			return lhs.current != rhs.current;
+		}
+	protected:
+		Iterator current;
+	};
 
 }
 #endif //FT_CONTAINERS_ITERATOR_HPP
