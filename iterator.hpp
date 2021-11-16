@@ -127,8 +127,37 @@ namespace ft {
 		}
 
 		friend bool operator!= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs) {
-			return lhs.current != rhs.current;
+			return rhs.current != lhs.current;
 		}
+
+		friend bool operator== (const reverse_iterator<Iterator>& lhs,
+								const reverse_iterator<Iterator>& rhs) {
+			return (rhs.current == lhs.current);
+		}
+
+		friend bool operator< (const reverse_iterator<Iterator>& lhs,
+								const reverse_iterator<Iterator>& rhs) {
+			return (rhs.current < lhs.current);
+		}
+		friend bool operator<= (const reverse_iterator<Iterator>& lhs,
+								const reverse_iterator<Iterator>& rhs) {
+			return (rhs.current <= lhs.current);
+		}
+		friend bool operator> (const reverse_iterator<Iterator>& lhs,
+								const reverse_iterator<Iterator>& rhs) {
+			return (rhs.current > lhs.current);
+		}
+		friend bool operator>= (const reverse_iterator<Iterator>& lhs,
+								const reverse_iterator<Iterator>& rhs) {
+			return (rhs.current >= lhs.current);
+		}
+		friend reverse_iterator<Iterator> operator+ (difference_type n, const reverse_iterator<Iterator>& rev_it) {
+			return (rev_it.current - n);
+		}
+		friend difference_type operator- (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs) {
+			return (rhs.current - lhs.current);
+		}
+
 	protected:
 		Iterator current;
 	};

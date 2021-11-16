@@ -4,7 +4,6 @@
 
 #ifndef FT_CONTAINERS_METAFUNCTIONS_HPP
 #define FT_CONTAINERS_METAFUNCTIONS_HPP
-#include "is_integral.hpp"
 namespace ft{
 	template <class U, class V>
 	// ----- IS SAME -----
@@ -27,57 +26,52 @@ namespace ft{
 
 	};
 
-	// ------- EQUAL / LEXICOGRAPHICAL COMPARE -------
+	// ----- TRUE AND FALSE TYPE -----
+	struct false_type {
+		static const bool value = false;
+		typedef false_type type;
 
-	template <class InputIterator1, class InputIterator2>
-	bool equal ( InputIterator1 first1, InputIterator1 last1, InputIterator2 first2 )
-	{
-		while (first1!=last1) {
-			if (!(*first1 == *first2))   // or: if (!pred(*first1,*first2)), for version 2
-				return false;
-			++first1; ++first2;
-		}
-		return true;
-	}
+		operator bool() { return false; }
+	};
 
-	template <class InputIterator1, class InputIterator2, class BinaryPredicate>
-	bool equal ( InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, BinaryPredicate pred)
-	{
-		while (first1!=last1) {
-			if (!pred(*first1,*first2))
-				return false;
-			++first1; ++first2;
-		}
-		return true;
-	}
+	struct true_type {
+		static const bool value = true;
+		typedef true_type type;
+		operator bool() { return true; }
+	};
 
-	template <class InputIterator1, class InputIterator2>
-	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
-								  InputIterator2 first2, InputIterator2 last2)
-	{
-		while (first1!=last1)
-		{
-			if (first2==last2 || *first2<*first1) return false;
-			else if (*first1<*first2) return true;
-			++first1; ++first2;
-		}
-		return (first2!=last2);
-	}
-
-	template <class InputIterator1, class InputIterator2, class Compare>
-	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
-								  	InputIterator2 first2, InputIterator2 last2,
-								  		Compare comp)
-	{
-		while (first1 != last1)
-		{
-			if (first2 == last2 || !comp(*first1, *first2)) return false;
-			else if (comp(*first1, *first2)) return true;
-			++first1; ++first2;
-		}
-		return (first2!=last2);
-	}
-
+	template<typename T>
+	struct is_integral : false_type {};
+	template<>
+	struct is_integral<bool>: true_type {};
+	template<>
+	struct is_integral<char>: true_type {};
+	template<>
+	struct is_integral<char16_t>: true_type {};
+	template<>
+	struct is_integral<char32_t>: true_type {};
+	template<>
+	struct is_integral<wchar_t>: true_type {};
+	template<>
+	struct is_integral<signed char>: true_type {};
+	template<>
+	struct is_integral<short int>: true_type {};
+	template<>
+	struct is_integral<int>: true_type {};
+	template<>
+	struct is_integral<long int>: true_type {};
+	template<>
+	struct is_integral<long long int>: true_type {};
+	template<>
+	struct is_integral<unsigned char>: true_type {};
+	template<>
+	struct is_integral<unsigned short int>: true_type {};
+	template<>
+	struct is_integral<unsigned int>: true_type {};
+	template<>
+	struct is_integral<unsigned long int>: true_type {};
+	template<>
+	struct is_integral<unsigned long long int>: true_type {};
 
 }
 
