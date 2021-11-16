@@ -14,7 +14,14 @@ NAME			= ft_containers
 
 FILES			= main.cpp
 
-INC_FILES		= vector.hpp iterator.hpp
+
+INC_CONTAINERS = vector.hpp stack.hpp map.hpp
+INC_ITERATOR	= iterator.hpp random_access_iterator.hpp bidirectional_iterator.hpp
+INC_GENERAL		= metafunctions.hpp pair.hpp utility.hpp
+INC_FILES		=	${ addprefix containers/, ${INC_CONTAINERS} }\
+ 					${ addprefix iterator/, ${INC_ITERATOR} }\
+ 					${INC_GENERAL}
+
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
 

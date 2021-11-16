@@ -1,8 +1,8 @@
-#include "vector.hpp"
-#include "stack.hpp"
+#include "containers/vector.hpp"
+#include "containers/stack.hpp"
+#include "containers/map.hpp"
+#include "iterator/bidirectional_iterator.hpp"
 #include <vector>
-#include "pair.hpp"
-#include "map.hpp"
 int main() {
 	ft::stack<int> a;
 
