@@ -33,7 +33,7 @@ BIN				= $(SRC:%.cpp=$(BIN_PATH)/%.o)
 
 CC				= clang++
 RM				= rm -rf
-FLAGS			= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
+FLAGS			= -Wall -Wextra -Werror -std=c++98
 AR				= ar rcs
 
 all:  			${NAME}
@@ -50,9 +50,10 @@ ${NAME}: 		init ${BIN}
 				${CC} ${FLAGS} ${BIN} -I ${INC_PATH} -o ${NAME}
 
 test:			${NAME}
-
-test:
 				make -C ../ft_containers_test all
+
+leaks:			${NAME}
+				leaks -atExit -- ./${NAME}
 
 clean:
 				@${RM} ${BIN_PATH}

@@ -4,7 +4,6 @@
 
 #ifndef FT_CONTAINERS_UTILITY_HPP
 #define FT_CONTAINERS_UTILITY_HPP
-#endif //FT_CONTAINERS_UTILITY_HPP
 
 namespace ft {
 	// ------- EQUAL / LEXICOGRAPHICAL COMPARE -------
@@ -60,3 +59,4 @@ namespace ft {
 
 
 }
+#endif //FT_CONTAINERS_UTILITY_HPP

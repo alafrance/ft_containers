@@ -3,9 +3,14 @@
 #include "containers/map.hpp"
 #include "iterator/bidirectional_iterator.hpp"
 #include <vector>
+#include <map>
 #include "RedBlackTree.hpp"
 int main() {
-	RBTree<int>	tree(5);
+	RBTree<int>	tree;
 
-	tree.display(tree.getRoot());
+	tree.insert(tree.createNode(7));
+	tree.insert(tree.createNode(8));
+	tree.insert(tree.createNode(9));
+	tree.display();
+
 }
