@@ -7,7 +7,13 @@
 
 #include "utility.hpp"
 #include <iostream>
+#include <fstream>
+#include <limits>
+#include <stdlib.h>
+#include <sstream>
+
 enum e_color { black, red };
+enum e_direction { left, right };
 
 template<typename T>
 struct node {
@@ -28,7 +34,7 @@ public:
 	RBTree(RBTree const& tree): root(nullptr) { root = tree.root; }
 
 	~RBTree() {
-		deleteTree(root);
+//		deleteTree(root);
 	}
 
 	RBTree &operator=(RBTree<T> const& tree) {
@@ -40,11 +46,11 @@ public:
 		return (*this);
 	}
 
-	node<T> *createNode(T data) {
+	node<T> *createNode(T data) const{
 		node<T> *tmp;
 		tmp = new node<T>;
 		tmp->data = data;
-		tmp->color = black;
+		tmp->color = red;
 		tmp->left = nullptr;
 		tmp->right = nullptr;
 		tmp->parent = nullptr;
@@ -55,7 +61,7 @@ public:
 		insert(root, add);
 	}
 
-	void display() {
+	void display() const{
 		iter(root, &RBTree::displayNode);
 	};
 
@@ -68,34 +74,59 @@ public:
 		delete node;
 	}
 
-	void rotateLeft(node<T> *(*node)) {
-		if ((*node)->parent == nullptr)
+	void rotate(node<T> *node, e_direction direction) {
+		if (node == nullptr || node->parent == nullptr)
 			return ;
-		// X = node->parent
-		// Y = node && (node->parent->left || node->parent->right)
-		// p = node->parent->parent
-		// alpha = (node->parent->left || node->parent->right)
-		// beta = node->left
-		// Y = node->right
+		::node<T> *gp = node->parent->parent;
+		::node<T> *p = node->parent;
+		::node<T> **gpLink = nullptr;
+		if (gp)
+			gpLink = (gp->left == p) ? &gp->left : &gp->right;
 
-		// Assign x as the parent of the left subtree of y
-		if ((*node)->parent->left == (*node))
-			(*node)->parent->left = (*node)->left;
-		else
-			(*node)->parent->right = (*node)->right;
-		// Change the parent of x to that of y
-		if ((*node)->parent->parent == nullptr)
-			root = (*node);
-		else {
-			(*node)->parent->parent = (*node);
+		if ((p->right == node && direction == right) ||
+				(p->left == node && direction == left) ) {
+			std::cerr << "wrong direction" << std::endl;
+			return ;
 		}
-		(*node)->left = (*node)->parent
+		// ROTATE PARENT CHILD AND NODE CHILD LEFT
+		if (direction == left) {
+			p->right = node->left;
+			if (node->left)
+				node->left->parent = p;
+			node->left = p;
+		} else { // ROTATE PARENT CHILD AND NODE CHILD RIGHT
+			p->left = node->right;
+			if (node->right)
+				node->right->parent = p;
+			node->right = p;
+		}
+		// MODIFY POINTER OF GP AND MAKE NODE AS PARENT IF NECESSARY
+		if (gp == nullptr)
+			root = node;
+		else
+			*gpLink = node; // WHY DUDE
+		// MODIFY THE PARENT
+		p->parent = node;
+		node->parent = gp;
+	}
 
+	void displayTree() const{
+		displayTree(root, 0);
+	}
+	node<T> *getRoot() const {
+		return root;
 	}
 
 private:
 	node<T>* root;
-
+	void displayTree(node<T> *node, int depth) const {
+		if (node == nullptr) {
+			return;
+		}
+		displayTree(node->left, depth + 1);
+		displayTree(node->right, depth + 1);
+		std::cout << node->data << " ";
+	}
 	void displayNode(node<T> *node) {
 		std::cout << "color: " << node->color << ", data : " << node->data << std::endl;
 	}

@@ -33,7 +33,7 @@ BIN				= $(SRC:%.cpp=$(BIN_PATH)/%.o)
 
 CC				= clang++
 RM				= rm -rf
-FLAGS			= -Wall -Wextra -Werror -std=c++98
+FLAGS			= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
 AR				= ar rcs
 
 all:  			${NAME}
