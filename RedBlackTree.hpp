@@ -29,12 +29,12 @@ class RBTree{
 public:
 	RBTree(): root(nullptr) {}
 
-	explicit RBTree(T data): root(createNode(data)) {}
+	explicit RBTree(T data): root(createNode(data, black)) {}
 
 	RBTree(RBTree const& tree): root(nullptr) { root = tree.root; }
 
 	~RBTree() {
-//		deleteTree(root);
+		deleteTree(root);
 	}
 
 	RBTree &operator=(RBTree<T> const& tree) {
@@ -51,6 +51,16 @@ public:
 		tmp = new node<T>;
 		tmp->data = data;
 		tmp->color = red;
+		tmp->left = nullptr;
+		tmp->right = nullptr;
+		tmp->parent = nullptr;
+		return (tmp);
+	}
+	node<T> *createNode(T data, e_color color) const{
+		node<T> *tmp;
+		tmp = new node<T>;
+		tmp->data = data;
+		tmp->color = color;
 		tmp->left = nullptr;
 		tmp->right = nullptr;
 		tmp->parent = nullptr;
@@ -111,7 +121,7 @@ public:
 	}
 
 	void displayTree() const{
-		displayTree(root, 0);
+		printHelper(root, "", true);
 	}
 	node<T> *getRoot() const {
 		return root;
@@ -119,13 +129,33 @@ public:
 
 private:
 	node<T>* root;
-	void displayTree(node<T> *node, int depth) const {
+	void postOrderDisplay(node<T> *node, int depth) const {
 		if (node == nullptr) {
 			return;
 		}
 		displayTree(node->left, depth + 1);
 		displayTree(node->right, depth + 1);
 		std::cout << node->data << " ";
+	}
+
+	void printHelper(node<T>* root, std::string indent, bool last) const{
+		if (root != nullptr) {
+			std::cout << indent;
+			if (last) {
+				std::cout << "R----";
+				indent += "   ";
+			} else {
+				std::cout << "L----";
+				indent += "|  ";
+			}
+			if (root->color == red)
+				std::cout << "\e[0;31m";
+			else
+				std::cout << "\e[0;37m";
+			std::cout << root->data << "\e[0m" << std::endl;
+			printHelper(root->left, indent, false);
+			printHelper(root->right, indent, true);
+		}
 	}
 	void displayNode(node<T> *node) {
 		std::cout << "color: " << node->color << ", data : " << node->data << std::endl;
@@ -138,6 +168,61 @@ private:
 		(this->*fct)(pRoot);
 		iter(pRoot->right, fct);
 	};
+public:
+	void insertFix(node<T> *node){
+		if (node == nullptr)
+			return ;
+		if (node->parent == nullptr)
+		{
+			node->color = black;
+			return ;
+		}
+		if (node->parent->parent == nullptr)
+			return ;
+		while(node->parent->color == red) {
+			// IF PARENT == LEFT CHILD GRAND PARENT DOING THIS :
+			if (node->parent == node->parent->parent->left) {
+				// CASE 1
+				if (node->parent->parent->right->color == red) {
+					std::cout << "Case 1" << std::endl;
+					node->parent->color = black; // Equal to parent
+					node->parent->parent->right->color = black;
+					node->parent->parent->color = red;
+					node = node->parent->parent;
+				}
+				// CASE 2
+				else if (node == node->parent->right) {
+					std::cout << "Case 2" << std::endl;
+					rotate(node, left);
+					node = node->left;
+				}
+				// CASE 3
+				else {
+					std::cout << "Case 3" << std::endl;
+					node->parent->color = black;
+					node->parent->parent->color = black;
+					rotate(node->parent, right);
+					//TODO: NEED TO CHANGE NODE
+					node = node->parent;
+					std::cout << "node: " << node->data << std::endl;
+					break;
+				}
+			}
+			// ELSE
+			else {
+				std::cout << "ELSE BRO\n";
+				// CASE 1
+				// CASE 2
+			}
+			// LOOK THE CHECK ON THE WHILE
+			if (node == root) {
+				std::cout << "Break\n";
+				break;
+			}
+		}
+		// MAKE ROOT BLACK (FIRST PROPERTIES OF R-D-TREE)
+	}
+private:
 
 	void insert(node<T> *node, ::node<T> *add) {
 		if (root == nullptr) {
@@ -150,6 +235,7 @@ private:
 			if (node->left == nullptr) {
 				node->left = add;
 				node->left->parent = node;
+//				insertFix(node->left);
 			} else
 				insert(node->left, add);
 		}
@@ -157,6 +243,7 @@ private:
 			if (node->right == nullptr) {
 				node->right = add;
 				node->right->parent = node;
+//				insertFix(node->right);
 			} else
 				insert(node->right, add);
 		}

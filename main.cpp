@@ -5,19 +5,22 @@
 #include <map>
 #include "RedBlackTree.hpp"
 int main() {
-	RBTree<int>	tree(500);
+	RBTree<int>	tree(33);
 
-	tree.insert(tree.createNode(50));
-	tree.insert(tree.createNode(60));
-	tree.insert(tree.createNode(40));
-	tree.insert(tree.createNode(30));
-	tree.insert(tree.createNode(45));
-	tree.insert(tree.createNode(44));
-	tree.insert(tree.createNode(46));
-
-	tree.rotate(tree.getRoot()->left->left->right,left);
-	tree.rotate(tree.getRoot()->left->left,right);
+	tree.insert(tree.createNode(13, red));
+	tree.insert(tree.createNode(53, black));
+	tree.insert(tree.createNode(11, black));
+	tree.insert(tree.createNode(21, black));
+	tree.insert(tree.createNode(41, red));
+	tree.insert(tree.createNode(61, red));
+	tree.insert(tree.createNode(15, red));
+	tree.insert(tree.createNode(31, red));
+	tree.insert(tree.createNode(20));
+	tree.insertFix(tree.getRoot()->left->right->left->right);
 	tree.displayTree();
+//	tree.insertFix()
+	//	tree.rotate(tree.getRoot()->left->left->right,left);
+	//	tree.rotate(tree.getRoot()->left->left,right);
 }
 /*
 	p = 500
