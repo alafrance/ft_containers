@@ -95,7 +95,9 @@ public:
 
 		if ((p->right == node && direction == right) ||
 				(p->left == node && direction == left) ) {
-			std::cerr << "wrong direction" << std::endl;
+			std::cout << "wrong direction" << std::endl;
+			std::cout << "node wrong direction : " << node->data << " and direction : " << direction << std::endl;
+			displayTree();
 			return ;
 		}
 		// ROTATE PARENT CHILD AND NODE CHILD LEFT
@@ -114,7 +116,7 @@ public:
 		if (gp == nullptr)
 			root = node;
 		else
-			*gpLink = node; // WHY DUDE
+			*gpLink = node;
 		// MODIFY THE PARENT
 		p->parent = node;
 		node->parent = gp;
@@ -179,52 +181,126 @@ public:
 		}
 		if (node->parent->parent == nullptr)
 			return ;
+		e_direction direction;
+		std::cout << "\nNode insert fix : " << node->data << std::endl;
 		while(node->parent->color == red) {
 			// IF PARENT == LEFT CHILD GRAND PARENT DOING THIS :
-			if (node->parent == node->parent->parent->left) {
-				// CASE 1
-				if (node->parent->parent->right->color == red) {
-					std::cout << "Case 1" << std::endl;
-					node->parent->color = black; // Equal to parent
-					node->parent->parent->right->color = black;
-					node->parent->parent->color = red;
-					node = node->parent->parent;
-				}
+			if (node->parent == node->parent->parent->left)
+				direction = left;
+			else
+				direction = right;
+			::node<T> *uncle = (direction == left) ? node->parent->parent->right : node->parent->parent->left;
+			// CASE 1
+			if (uncle->color == red) {
+				std::cout << "Case 1" << std::endl;
+				node->parent->color = black;
+				uncle->color = black;
+				node->parent->parent->color = red;
+				node = node->parent->parent;
+			} else {
 				// CASE 2
-				else if (node == node->parent->right) {
+				if (direction == left && node == node->parent->right) {
+					std::cout << "Case 2" << std::endl;
+					rotate(node, right);
+					node = node->parent;
+				} else if (direction == right && node == node->parent->left) {
 					std::cout << "Case 2" << std::endl;
 					rotate(node, left);
-					node = node->left;
+					node = node->parent;
 				}
 				// CASE 3
-				else {
-					std::cout << "Case 3" << std::endl;
+				std::cout << "Case 3" << std::endl;
+				if (node->parent)
 					node->parent->color = black;
-					node->parent->parent->color = black;
-					rotate(node->parent, right);
-					//TODO: NEED TO CHANGE NODE
-					node = node->parent;
-					std::cout << "node: " << node->data << std::endl;
-					break;
-				}
-			}
-			// ELSE
-			else {
-				std::cout << "ELSE BRO\n";
-				// CASE 1
-				// CASE 2
+				if (node->parent && node->parent->parent)
+					node->parent->parent->color = red;
+				rotate(node->parent, direction);
 			}
 			// LOOK THE CHECK ON THE WHILE
-			if (node == root) {
-				std::cout << "Break\n";
+			if (node == root || node == nullptr || node->parent == nullptr
+				|| node->parent->parent == nullptr) {
+				root->color = black; // MAKE ROOT BLACK (FIRST PROPERTIES OF R-D-TREE)
 				break;
 			}
 		}
-		// MAKE ROOT BLACK (FIRST PROPERTIES OF R-D-TREE)
+//				// CASE 1
+//				::node<T> *uncle = node->parent->parent->right;
+//				if (uncle->color == red) {
+//					std::cout << "Case 1" << std::endl;
+//					node->parent->color = black; // Equal to parent
+//					uncle->color = black;
+//					node->parent->parent->color = red;
+//					node = node->parent->parent;
+//				}
+//				else {
+//					// CASE 2
+//					if (node == node->parent->right) {
+//						std::cout << "Case 2" << std::endl;
+//						rotate(node, left);
+//						node = node->left;
+//					}
+//					// CASE 3
+//					std::cout << "Case 3" << std::endl;
+//					if (node->parent)
+//						node->parent->color = black;
+//					if (node->parent && node->parent->parent)
+//						node->parent->parent->color = red;
+//					rotate(node->parent, right);
+//					std::cout << "node: " << node->data << std::endl;
+//
+//				}
+//			}
+//			// ELSE THE PARENT IS RIGHT CHILD OF GRAND PARENT
+//			else {
+//				std::cout << "ELSE BRO\n";
+//				::node<T> *gp = node->parent->parent;
+//				::node<T> *uncle = nullptr;
+//				if (gp)
+//					uncle = gp->left;
+//				// CASE 1
+//				if (uncle && uncle->color == red) {
+//					std::cout << "Case 1" << std::endl;
+//					uncle->color = black;
+//					node->parent->color = black;
+//					gp->color = red;
+//					node = node->parent->parent;
+//				} else { // CASE 2
+//					if (node == node->parent->left) {
+//						std::cout << "Case 2" << std::endl;
+//						rotate(node, right);
+//						node = node->parent;
+//						std::cout << "node case 2 : " << node->data << std::endl;
+//					}
+//					if (node->parent)
+//						node->parent->color = black;
+//					if (node->parent && node->parent->parent)
+//						node->parent->parent->color = red;
+//					rotate(node->parent, left);
+//				}
+//			}
+	}
+	node<T> *search_key(T data) {
+		return (search_key(root, data));
+	}
+	node<T> *search_key(node<T> *node, T data) {
+		::node<T> *find = nullptr;
+		if (node == nullptr)
+			return nullptr;
+		if (data == node->data)
+			return node;
+		if (data < node->data)
+			find = search_key(node->left, data);
+		else
+			find = search_key(node->right, data);
+		return find;
 	}
 private:
 
 	void insert(node<T> *node, ::node<T> *add) {
+		if (search_key(add->data)) {
+			std::cerr << "KEY UNIQUE : " << add->data << std::endl;
+			return ;
+		}
 		if (root == nullptr) {
 			root = add;
 			return ;
@@ -235,7 +311,7 @@ private:
 			if (node->left == nullptr) {
 				node->left = add;
 				node->left->parent = node;
-//				insertFix(node->left);
+				insertFix(node->left);
 			} else
 				insert(node->left, add);
 		}
@@ -243,7 +319,7 @@ private:
 			if (node->right == nullptr) {
 				node->right = add;
 				node->right->parent = node;
-//				insertFix(node->right);
+				insertFix(node->right);
 			} else
 				insert(node->right, add);
 		}

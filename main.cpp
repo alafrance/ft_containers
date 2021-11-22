@@ -7,20 +7,27 @@
 int main() {
 	RBTree<int>	tree(33);
 
-	tree.insert(tree.createNode(13, red));
-	tree.insert(tree.createNode(53, black));
-	tree.insert(tree.createNode(11, black));
-	tree.insert(tree.createNode(21, black));
-	tree.insert(tree.createNode(41, red));
-	tree.insert(tree.createNode(61, red));
-	tree.insert(tree.createNode(15, red));
-	tree.insert(tree.createNode(31, red));
+	tree.insert(tree.createNode(13));
+	tree.insert(tree.createNode(53));
+	tree.insert(tree.createNode(11));
+	tree.insert(tree.createNode(21));
+	tree.insert(tree.createNode(41));
+	tree.insert(tree.createNode(61));
+	tree.insert(tree.createNode(15));
+	tree.insert(tree.createNode(31));
 	tree.insert(tree.createNode(20));
-	tree.insertFix(tree.getRoot()->left->right->left->right);
+	tree.insert(tree.createNode(42));
+	tree.insert(tree.createNode(43));
+//	tree.insert(tree.createNode(56));
+//	tree.insert(tree.createNode(36));
+//	tree.insert(tree.createNode(27));
+//	tree.insert(tree.createNode(52));
+//	tree.insert(tree.createNode(45));
+//	tree.insert(tree.createNode(10));
+//	tree.insert(tree.createNode(78));
 	tree.displayTree();
+//	tree.insert(tree.createNode(100));
 //	tree.insertFix()
-	//	tree.rotate(tree.getRoot()->left->left->right,left);
-	//	tree.rotate(tree.getRoot()->left->left,right);
 }
 /*
 	p = 500
