@@ -16,23 +16,26 @@ enum e_color {
 enum e_direction {
 	left, right
 };
-template<typename T>
+
+template<typename T, typename U>
 struct node {
-	T data;
+	// TODO: CHANGE STD TO FT
+	std::pair<T, U> data;
 	e_color color;
 	node *left;
 	node *right;
 	node *parent;
 };
 
-template<typename T>
+template<typename T, typename U>
 class RBTree {
 public:
 
+	typedef node<T, U> * nodePtr;
 	// ---------------- CANONICAL FORM ----------------
 	RBTree() : root(nullptr) {}
 
-	explicit RBTree(T data) : root(createNode(data, black)) {}
+	explicit RBTree(T key) : root(createNode(key, black)) {}
 
 	RBTree(RBTree const &tree) : root(nullptr) { root = tree.root; }
 
@@ -40,20 +43,20 @@ public:
 //		deleteTree(root);
 	}
 
-	RBTree &operator=(RBTree<T> const &tree) {
+	RBTree &operator=(RBTree<T, U> const &tree) {
 		deleteTree();
 		if (tree.root != nullptr) {
-			root = new node<T>;
+			root = new node<T, U>;
 			root = tree.root;
 		}
 		return (*this);
 	}
 	// ---------------- UTILITY COPY / CREATE ----------------
 
-	node<T> *createNode(T data) const {
-		node<T> *tmp;
-		tmp = new node<T>;
-		tmp->data = data;
+	nodePtr createNode(T key) const {
+		nodePtr tmp;
+		tmp = new node<T, U>;
+		tmp->data.first = key;
 		tmp->color = red;
 		tmp->left = nullptr;
 		tmp->right = nullptr;
@@ -61,10 +64,22 @@ public:
 		return (tmp);
 	}
 
-	node<T> *createNode(T data, e_color color) const {
-		node<T> *tmp;
-		tmp = new node<T>;
-		tmp->data = data;
+	nodePtr createNode(T key, U data) const {
+		nodePtr tmp;
+		tmp = new node<T, U>;
+		tmp->data.first = key;
+		tmp->data.second = data;
+		tmp->color = red;
+		tmp->left = nullptr;
+		tmp->right = nullptr;
+		tmp->parent = nullptr;
+		return (tmp);
+	}
+
+	nodePtr createNode(T key, e_color color) const {
+		nodePtr tmp;
+		tmp = new node<T, U>;
+		tmp->data.first = key;
 		tmp->color = color;
 		tmp->left = nullptr;
 		tmp->right = nullptr;
@@ -73,7 +88,7 @@ public:
 	}
 
 	// ---------------- GETTER  ----------------
-	node<T> *getRoot() const {
+	nodePtr getRoot() const {
 		return root;
 	}
 
@@ -93,7 +108,7 @@ public:
 
 	// ---------------- DISPLAY ----------------
 
-	void postOrderDisplay(node<T> *node, int depth) const {
+	void postOrderDisplay(nodePtr node, int depth) const {
 		if (node == nullptr) {
 			return;
 		}
@@ -102,7 +117,7 @@ public:
 		std::cout << node->data << " ";
 	}
 
-	void printHelper(node<T> *root, std::string indent, bool last) const {
+	void printHelper(nodePtr root, std::string indent, bool last) const {
 		if (root != nullptr) {
 			std::cout << indent;
 			if (last) {
@@ -116,17 +131,17 @@ public:
 				std::cout << "\e[0;31m";
 			else
 				std::cout << "\e[0;37m";
-			std::cout << root->data << "\e[0m" << std::endl;
+			std::cout << root->data.first << "\e[0m" << std::endl;
 			printHelper(root->left, indent, false);
 			printHelper(root->right, indent, true);
 		}
 	}
 
-	void displayNode(node<T> *node) {
+	void displayNode(nodePtr node) {
 		std::cout << "color: " << node->color << ", data : " << node->data << std::endl;
 	}
 
-	void iter(node<T> *pRoot, void (RBTree<T>::*fct)(node<T> *)) {
+	void iter(nodePtr pRoot, void (RBTree<T, U>::*fct)(nodePtr )) {
 		if (pRoot == nullptr)
 			return;
 		iter(pRoot->left, fct);
@@ -136,27 +151,27 @@ public:
 
 	// ---------------- SEARCH ----------------
 
-	node<T> *search_key(T data) {
-		return (search_key(root, data));
+	nodePtr search_key(T key) {
+		return (search_key(root, key));
 	}
 
-	node<T> *search_key(node<T> *node, T data) {
-		::node<T> *find = nullptr;
+	nodePtr search_key(nodePtr node, T key) {
+		nodePtr find = nullptr;
 		if (node == nullptr)
 			return nullptr;
-		if (data == node->data)
+		if (key == node->data.first)
 			return node;
-		if (data < node->data)
-			find = search_key(node->left, data);
+		if (key < node->data.first)
+			find = search_key(node->left, key);
 		else
-			find = search_key(node->right, data);
+			find = search_key(node->right, key);
 		return find;
 	}
 
 	// ---------------- INSERT  ----------------
-	void insert(node<T> *node, ::node<T> *add) {
-		if (search_key(add->data)) {
-			std::cerr << "KEY UNIQUE : " << add->data << std::endl;
+	void insert(nodePtr node, nodePtr add) {
+		if (search_key(add->data.first)) {
+			std::cerr << "KEY UNIQUE : " << add->data.first << std::endl;
 			return;
 		}
 		if (root == nullptr) {
@@ -165,18 +180,18 @@ public:
 		}
 		if (add == nullptr || node == nullptr)
 			return;
-		if (add->data < node->data) {
+		if (add->data.first < node->data.first) {
 			if (node->left == nullptr) {
 				node->left = add;
 				node->left->parent = node;
-				insertFix(node->left);
+//				insertFix(node->left);
 			} else
 				insert(node->left, add);
 		} else {
 			if (node->right == nullptr) {
 				node->right = add;
 				node->right->parent = node;
-				insertFix(node->right);
+//				insertFix(node->right);
 			} else
 				insert(node->right, add);
 		}
@@ -184,18 +199,18 @@ public:
 
 	// ---------------- INSERT UTILITIES ----------------
 private:
-	void rotate(node<T> *node, e_direction direction) {
+	void rotate(nodePtr node, e_direction direction) {
 		if (node == nullptr || node->parent == nullptr)
 			return;
-		::node<T> *gp = node->parent->parent;
-		::node<T> *p = node->parent;
-		::node<T> **gpLink = nullptr;
+		nodePtr gp = node->parent->parent;
+		nodePtr p = node->parent;
+		nodePtr *gpLink = nullptr;
 		if (gp)
 			gpLink = (gp->left == p) ? &gp->left : &gp->right;
 		if ((p->right == node && direction == right) ||
 			(p->left == node && direction == left)) {
 			std::cerr << "wrong direction" << std::endl;
-			std::cerr << "node wrong direction : " << node->data << " and direction : " << direction << std::endl;
+			std::cerr << "node wrong direction : " << node->data.first << " and direction : " << direction << std::endl;
 			return;
 		}
 		// ROTATE PARENT CHILD AND NODE CHILD LEFT
@@ -220,7 +235,7 @@ private:
 		node->parent = gp;
 	}
 
-	void insertFix(node<T> *node) {
+	void insertFix(nodePtr node) {
 		if (node == nullptr)
 			return;
 		if (node->parent == nullptr) {
@@ -236,10 +251,10 @@ private:
 			else
 				gp_to_p_direction = right;
 			// FIND THE GOOD UNCLE WITH THE GPLINK DIRECTION
-			::node<T> *uncle = (gp_to_p_direction == left) ? node->parent->parent->right : node->parent->parent->left;
+			nodePtr uncle = (gp_to_p_direction == left) ? node->parent->parent->right : node->parent->parent->left;
 			// CASE 1 UNCLE IS RED : MODIFY THE CHILD OF GRAND PARENT BLACK AND GRAND PARENT RED, AND GO TO GP
 			if (uncle && uncle->color == red) { // CASE IF UNCLE RED => COLOR BLACK PARENTS OF GP AND GP TO RED, GO TO GP
-				std::cout << "Case 1 node : " << node->data << std::endl;
+				std::cout << "Case 1 node : " << node->data.first << std::endl;
 				node->parent->color = black;
 				uncle->color = black;
 				node->parent->parent->color = red;
@@ -248,7 +263,7 @@ private:
 				// NO UNCLE RED OR NO UNCLE TRY TO ROTATE IF POSSIBLE
 				if ((gp_to_p_direction == right && node == node->parent->left)
 					|| (gp_to_p_direction == left && node == node->parent->right)) {
-					::node<T> *tmp = node->parent;
+					nodePtr tmp = node->parent;
 					rotate(node, gp_to_p_direction);
 					node = tmp;
 				}
@@ -272,7 +287,7 @@ public:
 
 	// ---------------- DELETE  ----------------
 
-	void deleteTree(node<T> *node) {
+	void deleteTree(nodePtr node) {
 		if (node == nullptr) {
 			return;
 		}
@@ -281,34 +296,80 @@ public:
 		delete node;
 	}
 
-	void deleteNode(node<T> *node) {
+	void deleteNode(nodePtr node) {
 		if (node == nullptr)
 			return ;
-//		::node<T> *tmp;
-//		e_color originalColor = node->color;
-		if (node->left == NULL) {
-//			tmp = node->right;
+		std::cout << "DELETE : " << std::endl;
+		nodePtr nodeReplace, nodeMin;
+		e_color nodeMin_originalColor = node->color;
+		if (node->left == nullptr) {
+			nodeReplace = node->right;
+			std::cout << "TRANSPLANT\n";
 			transplant(node, node->right);
-			display();
 		}
+		else if (node->right == nullptr) {
+			nodeReplace = node->left;
+			std::cout << "TRANSPLANT ELSE IF\n";
+			transplant(node, node->left);
+		} else {
+			std::cout << "TRANSPLANT ELSE\n";
+			// CHANGE MINIMUM IN BRANCH RIGHT
+			nodeMin = minimum(node->right);
+			// STOCK ORIGINAL COLOR TO KNOW IF WE NEED TO
+			// CALL DELETE FIX
+			nodeMin_originalColor = node->color;
+			nodeReplace = nodeMin->right;
+			// IF NODE MIN IS NOT CHILD OF NODE WE NEED TO REMOVE NODE MIN
+			// AND MODIFY RIGHT NODEMIN TO NODE RIGHT AND PARENT NODE TO NODEMIN
+			if (nodeMin->parent != node) {
+				transplant(nodeMin, nodeMin->right);
+				nodeMin->right = node->right;
+				nodeMin->right->parent = nodeMin;
+			}
+			// WE CAN, FINALLY, REMOVE NODE AND PUT NODE MIN
+			// AND WE CAN MODIFY LEFT NODE MIN TO OLD NODE LEFT AND NODE LEFT CHANGE PARENT
+			transplant(node, nodeMin);
+			nodeMin->left = node->left;
+			nodeMin->left->parent = nodeMin;
+			nodeMin->color = node->color;
+		}
+		// WE CAN DELETE THE NODE AND LOOK IF IS NECESSARY TO CALL DELETE FIX
+		delete node;
+		if (nodeMin_originalColor == black)
+			std::cout << "WE NEED TO CALL DELETE FIX" << std::endl;
+		std::cout << "END DELETE" << std::endl;
 	}
 
 	// ---------------- DELETE UTILITIES  ----------------
 
-	void transplant(node<T> *uncle, node<T> *node) {
-		if (uncle == nullptr || uncle->parent == nullptr)
-			std::cerr << "Transplant no uncle or uncle invalid" << std::endl;
-		if (uncle->parent == nullptr)
-			root = node;
-		else if (uncle->parent && uncle == uncle->parent->left)
-			uncle->parent->left = node;
+	void deleteFix(nodePtr node) {
+
+	}
+	nodePtr minimum(nodePtr node) {
+		if (node == nullptr)
+			return (nullptr);
+		if (node->left == nullptr)
+			return (node);
 		else
+			return(minimum(node->left));
+	}
+
+	void transplant(nodePtr uncle, nodePtr node) {
+		std::cout << "BOnsoir 1" << std::endl;
+		if (uncle == nullptr)
+			std::cerr << "Transplant no uncle or uncle invalid" << std::endl;
+		else if (uncle->parent == nullptr)
+			root = node;
+		else if (uncle == uncle->parent->left)
+			uncle->parent->left = node;
+		else if(uncle == uncle->parent->right)
 			uncle->parent->right = node;
-		node->parent = uncle->parent;
+		if (node != nullptr)
+			node->parent = uncle->parent;
 	}
 	// ---------------- ATTRIBUTES  ----------------
 private:
-	node<T> *root;
+	nodePtr root;
 };
 
 #endif //FT_CONTAINERS_REDBLACKTREE_HPP
