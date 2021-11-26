@@ -184,14 +184,14 @@ public:
 			if (node->left == nullptr) {
 				node->left = add;
 				node->left->parent = node;
-//				insertFix(node->left);
+				insertFix(node->left);
 			} else
 				insert(node->left, add);
 		} else {
 			if (node->right == nullptr) {
 				node->right = add;
 				node->right->parent = node;
-//				insertFix(node->right);
+				insertFix(node->right);
 			} else
 				insert(node->right, add);
 		}
@@ -209,8 +209,8 @@ private:
 			gpLink = (gp->left == p) ? &gp->left : &gp->right;
 		if ((p->right == node && direction == right) ||
 			(p->left == node && direction == left)) {
-			std::cerr << "wrong direction" << std::endl;
-			std::cerr << "node wrong direction : " << node->data.first << " and direction : " << direction << std::endl;
+			std::cout << "wrong direction" << std::endl;
+			std::cout << "node wrong direction : " << node->data.first << " and direction : " << direction << std::endl;
 			return;
 		}
 		// ROTATE PARENT CHILD AND NODE CHILD LEFT
@@ -254,7 +254,6 @@ private:
 			nodePtr uncle = (gp_to_p_direction == left) ? node->parent->parent->right : node->parent->parent->left;
 			// CASE 1 UNCLE IS RED : MODIFY THE CHILD OF GRAND PARENT BLACK AND GRAND PARENT RED, AND GO TO GP
 			if (uncle && uncle->color == red) { // CASE IF UNCLE RED => COLOR BLACK PARENTS OF GP AND GP TO RED, GO TO GP
-				std::cout << "Case 1 node : " << node->data.first << std::endl;
 				node->parent->color = black;
 				uncle->color = black;
 				node->parent->parent->color = red;
@@ -287,6 +286,10 @@ public:
 
 	// ---------------- DELETE  ----------------
 
+	void deleteNode(T key) {
+		deleteNode(search_key(key));
+	}
+
 	void deleteTree(nodePtr node) {
 		if (node == nullptr) {
 			return;
@@ -296,29 +299,31 @@ public:
 		delete node;
 	}
 
+private:
 	void deleteNode(nodePtr node) {
 		if (node == nullptr)
 			return ;
-		std::cout << "DELETE : " << std::endl;
-		nodePtr nodeReplace, nodeMin;
+		nodePtr nodeDeleteFix, nodeDeleteFixParent, nodeMin;
 		e_color nodeMin_originalColor = node->color;
 		if (node->left == nullptr) {
-			nodeReplace = node->right;
-			std::cout << "TRANSPLANT\n";
+			nodeDeleteFix = node->right;
+			std::cout << "CASE 1\n";
 			transplant(node, node->right);
+			nodeDeleteFixParent = node->parent;
 		}
 		else if (node->right == nullptr) {
-			nodeReplace = node->left;
-			std::cout << "TRANSPLANT ELSE IF\n";
+			nodeDeleteFix = node->left;
+			std::cout << "CASE 2\n";
 			transplant(node, node->left);
+			nodeDeleteFixParent = node->parent;
 		} else {
-			std::cout << "TRANSPLANT ELSE\n";
+			std::cout << "CASE 3\n";
 			// CHANGE MINIMUM IN BRANCH RIGHT
 			nodeMin = minimum(node->right);
 			// STOCK ORIGINAL COLOR TO KNOW IF WE NEED TO
 			// CALL DELETE FIX
 			nodeMin_originalColor = node->color;
-			nodeReplace = nodeMin->right;
+			nodeDeleteFix = nodeMin->right;
 			// IF NODE MIN IS NOT CHILD OF NODE WE NEED TO REMOVE NODE MIN
 			// AND MODIFY RIGHT NODEMIN TO NODE RIGHT AND PARENT NODE TO NODEMIN
 			if (nodeMin->parent != node) {
@@ -332,19 +337,93 @@ public:
 			nodeMin->left = node->left;
 			nodeMin->left->parent = nodeMin;
 			nodeMin->color = node->color;
+			nodeDeleteFixParent = nodeMin->right;
+			std::cout << "nodeDeleteFixParent :" << nodeMin->right->data.first << std::endl;
 		}
 		// WE CAN DELETE THE NODE AND LOOK IF IS NECESSARY TO CALL DELETE FIX
+//		if (nodeMin_originalColor == black && node->parent != nullptr)
+//			deleteFix(nodeDeleteFix, nodeDeleteFix);
 		delete node;
-		if (nodeMin_originalColor == black)
-			std::cout << "WE NEED TO CALL DELETE FIX" << std::endl;
-		std::cout << "END DELETE" << std::endl;
 	}
 
 	// ---------------- DELETE UTILITIES  ----------------
 
-	void deleteFix(nodePtr node) {
+	void deleteFix(nodePtr node, nodePtr nodeParent) {
+
+		nodePtr nodeTmp;
+		if (nodeParent != nullptr)
+			std::cout << "node parent: " << nodeParent->data.first << std::endl;
+		if (node == nullptr) {
+			std::cout << "C'est NUUULLL" << std::endl;
+		}
+		std::cout << "1" << std::endl;
+		while (node != root && (node == nullptr || (node && node->color == black) )) {
+			std::cout << "2" << std::endl;
+			e_direction direction = (node == nodeParent->left) ? left : right;
+			nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left;
+			std::cout << "3" << std::endl;
+			if(nodeTmp && nodeTmp->color == red) {
+				std::cout << "4" << std::endl;
+				nodeTmp->color = black;
+				nodeParent->color = red;
+				rotate(nodeTmp, direction);
+				nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left;
+			}
+			std::cout << "5" << std::endl;
+			if (node_is_black(nodeTmp->left) && node_is_black(nodeTmp->right)) {
+				std::cout << "6" << std::endl;
+				nodeTmp->color = red;
+				node = nodeParent;
+				nodeParent = nodeParent->parent;
+			}else {
+				if (direction == left) {
+					std::cout << "direction left : " << std::endl;
+					std::cout << std::boolalpha;
+					std::cout << "NODE TMP RIGHT : " << node_is_black(nodeTmp->right) << std::endl;
+					if (nodeTmp->right)
+						std::cout << nodeTmp->right->data.first << "color: " << nodeTmp->right->color << std::endl;
+				}
+				else {
+					std::cout << "direction right : " << std::endl;
+					std::cout << std::boolalpha;
+					std::cout << "NODE TMP LEFT : " << node_is_black(nodeTmp->left) << std::endl;
+					if (nodeTmp->left)
+						std::cout << nodeTmp->left->data.first << "color: " << nodeTmp->left->color <<std::endl;
+				}
+				std::cout << "s : " << nodeTmp->data.first << std::endl;
+				if ((direction == left && node_is_black(nodeTmp->right))
+					|| (direction == right && node_is_black(nodeTmp->left))) { // DIFF HERE
+					std::cout << "7" << std::endl;
+					if (direction == left && nodeTmp->left)
+						nodeTmp->left->color = black;
+					else if (direction == right && nodeTmp->right)
+						nodeTmp->right->color = black;
+//					(direction == left) ? nodeTmp->left->color = black : nodeTmp->right->color = black; // DIFF HERE
+					nodeTmp->color = red;
+					rotate(nodeTmp->left, (direction == left) ? right : left); // DIFF HERE
+					nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left; // DIFF HERE
+				}
+				std::cout << "8" << std::endl;
+				nodeTmp->color = nodeParent->color;
+				nodeParent->color = black;
+				if (direction == left && nodeTmp->right)
+					nodeTmp->right->color = black;
+				else if (direction == right && nodeTmp->left)
+					nodeTmp->left->color = black;
+//				(direction == left) ? nodeTmp->right->color = black : nodeTmp->left->color = black;
+				rotate((direction == left) ? nodeParent->right : nodeParent->left, direction);
+				node = root;
+				nodeParent = nullptr;
+			}
+		}
+		node->color = black;
 
 	}
+
+	bool node_is_black(nodePtr node) {
+		return (node == nullptr || (node != nullptr && node->color == black));
+	}
+
 	nodePtr minimum(nodePtr node) {
 		if (node == nullptr)
 			return (nullptr);
@@ -355,7 +434,6 @@ public:
 	}
 
 	void transplant(nodePtr uncle, nodePtr node) {
-		std::cout << "BOnsoir 1" << std::endl;
 		if (uncle == nullptr)
 			std::cerr << "Transplant no uncle or uncle invalid" << std::endl;
 		else if (uncle->parent == nullptr)
