@@ -312,26 +312,18 @@ private:
 	void deleteNode(nodePtr node) {
 		if (node == nullptr)
 			return ;
-		std::cout << "\nDelete : " << node->data.first << std::endl;
-		if (node->data.first == 531) {
-			display();
-			std::cout << std::endl;
-		}
 		nodePtr nodeDeleteFix, nodeDeleteFixParent, nodeMin;
 		e_color nodeMin_originalColor = node->color;
 		if (node->left == nullptr) {
-			std::cout << "CASE 1" << std::endl;
 			nodeDeleteFix = node->right;
 			nodeDeleteFixParent = node->parent;
 			transplant(node, node->right);
 		}
 		else if (node->right == nullptr) {
-			std::cout << "CASE 2" << std::endl;
 			nodeDeleteFix = node->left;
 			nodeDeleteFixParent = node->parent;
 			transplant(node, node->left);
 		} else {
-			std::cout << "CASE 3" << std::endl;
 			// CHANGE MINIMUM IN BRANCH RIGHT
 			nodeMin = minimum(node->right);
 			// STOCK ORIGINAL COLOR TO KNOW IF WE NEED TO
@@ -352,21 +344,9 @@ private:
 			nodeMin->left->parent = nodeMin;
 			nodeMin->color = node->color;
 			nodeDeleteFixParent = minimum(node->left);
-//			if (node->data.first == 531) {
-//				nodePtr nodeDeleteFixParent2 = minimum(node->right);
-//				if (node->data.first == 531 && ((nodeDeleteFixParent2->right == nodeDeleteFix )||
-//					(nodeDeleteFixParent2->left == nodeDeleteFix)))
-//					std::cout << "on a le bon parent" << std::endl;
-//				std::cout << "\nAFTER DELETION TREE IS : " << std::endl;
-//				if (nodeDeleteFix != nullptr)
-//					std::cout << "Node delete fix : " << nodeDeleteFix->data.first << std::endl;
-//				display();
-//			}
 		}
 		// WE CAN DELETE THE NODE AND LOOK IF IS NECESSARY TO CALL DELETE FIX
-		if (node->data.first == 531)
-			deleteFix(nodeDeleteFix, nodeDeleteFixParent);
-		else if (nodeMin_originalColor == black && nodeDeleteFixParent != nullptr)
+		if (nodeMin_originalColor == black && nodeDeleteFixParent != nullptr)
 			deleteFix(nodeDeleteFix, nodeDeleteFixParent);
 		if (root)
 			root->color = black;
@@ -404,68 +384,6 @@ private:
 					}
 					nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left; // DIFF HERE
 				}
-				if (nodeTmp)
-					nodeTmp->color = nodeParent->color;
-				nodeParent->color = black;
-				if (nodeTmp && direction == left && nodeTmp->right)
-					nodeTmp->right->color = black;
-				else if (nodeTmp && direction == right && nodeTmp->left)
-					nodeTmp->left->color = black;
-				rotate((direction == left) ? nodeParent->right : nodeParent->left, direction);
-				node = root;
-				nodeParent = nullptr;
-			}
-		}
-	}
-
-	void deleteFixDebug(nodePtr node, nodePtr nodeParent) {
-		nodePtr nodeTmp;
-		if (nodeParent != nullptr)
-			std::cout << "node parent: " << nodeParent->data.first << std::endl;
-		if (node == nullptr) {
-			std::cout << "C'est NUUULLL" << std::endl;
-		}
-		std::cout << " \n\n-----------------NODE BUG  ------------------- " << std::endl;
-		std::cout << "node parent " << nodeParent->data.first << std::endl;
-		display();
-		std::cout << std::endl << std::endl;
-		std::cout << "1" << std::endl;
-		while (node != root && nodeParent != nullptr && node_is_black(node)) {
-			std::cout << "2" << std::endl;
-			e_direction direction = (node == nodeParent->left) ? left : right;
-			nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left;
-			std::cout << "3" << std::endl;
-			if(nodeTmp && nodeTmp->color == red) {
-				std::cout << "4" << std::endl;
-				nodeTmp->color = black;
-				nodeParent->color = red;
-				rotate(nodeTmp, direction);
-				nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left;
-			}
-			std::cout << "5" << std::endl;
-			if (nodeTmp && node_is_black(nodeTmp->left) && node_is_black(nodeTmp->right)) {
-				std::cout << "6" << std::endl;
-				nodeTmp->color = red;
-				node = nodeParent;
-				nodeParent = nodeParent->parent;
-			}else {
-				if (nodeTmp != nullptr)
-					std::cout << "nodeTmp : " << nodeTmp->data.first << std::endl;
-				if (nodeTmp && ((direction == left && node_is_black(nodeTmp->right))
-								|| (direction == right && node_is_black(nodeTmp->left)))) { // DIFF HERE
-					std::cout << "7" << std::endl;
-					nodeTmp->color = red;
-					if (direction == left && nodeTmp->left) {
-						nodeTmp->left->color = black;
-						rotate(nodeTmp->left, right); // DIFF HERE
-					}
-					else if (direction == right && nodeTmp->right) {
-						nodeTmp->right->color = black;
-						rotate(nodeTmp->right, left); // DIFF HERE
-					}
-					nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left; // DIFF HERE
-				}
-				std::cout << "8" << std::endl;
 				if (nodeTmp)
 					nodeTmp->color = nodeParent->color;
 				nodeParent->color = black;
