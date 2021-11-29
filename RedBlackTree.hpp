@@ -337,44 +337,48 @@ private:
 			nodeMin->left = node->left;
 			nodeMin->left->parent = nodeMin;
 			nodeMin->color = node->color;
-			nodeDeleteFixParent = nodeMin->right;
-			std::cout << "nodeDeleteFixParent :" << nodeMin->right->data.first << std::endl;
+			nodeDeleteFixParent = nodeMin->parent;
 		}
 		// WE CAN DELETE THE NODE AND LOOK IF IS NECESSARY TO CALL DELETE FIX
-//		if (nodeMin_originalColor == black && node->parent != nullptr)
-//			deleteFix(nodeDeleteFix, nodeDeleteFix);
+		if (nodeMin_originalColor == black && nodeDeleteFixParent != nullptr)
+			deleteFix(nodeDeleteFixParent,(nodeDeleteFix == nodeDeleteFixParent->left) ? left : right);
 		delete node;
 	}
 
 	// ---------------- DELETE UTILITIES  ----------------
 
-	void deleteFix(nodePtr node, nodePtr nodeParent) {
+	void deleteFix(nodePtr node, e_direction direction) {
 
 		nodePtr nodeTmp;
-		if (nodeParent != nullptr)
-			std::cout << "node parent: " << nodeParent->data.first << std::endl;
-		if (node == nullptr) {
-			std::cout << "C'est NUUULLL" << std::endl;
-		}
+		nodePtr nodeChild = (direction == left) ? node->left : node->right;
+		std::cout << "node : " << node->data.first << std::endl;
 		std::cout << "1" << std::endl;
-		while (node != root && (node == nullptr || (node && node->color == black) )) {
+		while (nodeChild != root && nodeChild != nullptr && nodeChild->color == black) {
 			std::cout << "2" << std::endl;
-			e_direction direction = (node == nodeParent->left) ? left : right;
-			nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left;
+			nodeTmp = (direction == left) ? node->right : node->left;
 			std::cout << "3" << std::endl;
 			if(nodeTmp && nodeTmp->color == red) {
 				std::cout << "4" << std::endl;
 				nodeTmp->color = black;
-				nodeParent->color = red;
+				node->color = red;
 				rotate(nodeTmp, direction);
-				nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left;
+				nodeTmp = (direction == left) ? node->right : node->left;
+			}
+			if (nodeTmp == nullptr) {
+				std::cout << "direction : " << direction << std::endl;
+				std::cout << "nodeParent : " << node->data.first << std::endl;
+				display();
 			}
 			std::cout << "5" << std::endl;
 			if (node_is_black(nodeTmp->left) && node_is_black(nodeTmp->right)) {
 				std::cout << "6" << std::endl;
 				nodeTmp->color = red;
-				node = nodeParent;
-				nodeParent = nodeParent->parent;
+				node = node->parent;
+				if (node == nullptr)
+					nodeChild = nullptr;
+				else
+					nodeChild = (direction == left) ? node->left : node->right;
+//				nodeParent = nodeParent->parent;
 			}else {
 				if (direction == left) {
 					std::cout << "direction left : " << std::endl;
@@ -391,6 +395,8 @@ private:
 						std::cout << nodeTmp->left->data.first << "color: " << nodeTmp->left->color <<std::endl;
 				}
 				std::cout << "s : " << nodeTmp->data.first << std::endl;
+				if (nodeTmp->data.first == 42)
+					display();
 				if ((direction == left && node_is_black(nodeTmp->right))
 					|| (direction == right && node_is_black(nodeTmp->left))) { // DIFF HERE
 					std::cout << "7" << std::endl;
@@ -401,22 +407,23 @@ private:
 //					(direction == left) ? nodeTmp->left->color = black : nodeTmp->right->color = black; // DIFF HERE
 					nodeTmp->color = red;
 					rotate(nodeTmp->left, (direction == left) ? right : left); // DIFF HERE
-					nodeTmp = (direction == left) ? nodeParent->right : nodeParent->left; // DIFF HERE
+					nodeTmp = (direction == left) ? node->right : node->left; // DIFF HERE
 				}
 				std::cout << "8" << std::endl;
-				nodeTmp->color = nodeParent->color;
-				nodeParent->color = black;
+				nodeTmp->color = node->color;
+				node->color = black;
 				if (direction == left && nodeTmp->right)
 					nodeTmp->right->color = black;
 				else if (direction == right && nodeTmp->left)
 					nodeTmp->left->color = black;
 //				(direction == left) ? nodeTmp->right->color = black : nodeTmp->left->color = black;
-				rotate((direction == left) ? nodeParent->right : nodeParent->left, direction);
+				rotate((direction == left) ? node->right : node->left, direction);
 				node = root;
-				nodeParent = nullptr;
+//				node = nullptr;
 			}
 		}
-		node->color = black;
+		if (node)
+			node->color = black;
 
 	}
 
