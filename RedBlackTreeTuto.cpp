@@ -86,6 +86,9 @@ private:
 					s = x->parent->right;
 				}
 				std::cout << "5" << std::endl;
+				if (s != nullptr) {
+					std::cout << "nodeTmp : " << s->data << std::endl;
+				}
 				if (s->left->color == 0 && s->right->color == 0) {
 					std::cout << "6" << std::endl;
 					s->color = 1;
@@ -201,6 +204,8 @@ private:
 			y->color = z->color;
 		}
 		delete z;
+//		if (x != nullptr)
+//			std::cout << "x parent : " << x->parent->data << std::endl;
 		if (y_original_color == 0) {
 			deleteFix(x);
 		}
@@ -448,10 +453,10 @@ int main() {
 	bst.insert(48);
 	bst.insert(2);
 	bst.insert(57);
-	bst.printTree();
 	cout << endl
 		 << "After deleting" << endl;
 	bst.deleteNode(55);
+	bst.printTree();
 	bst.deleteNode(40);
 	bst.printTree();
 }
