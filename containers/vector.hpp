@@ -32,18 +32,19 @@ namespace ft {
 		typedef typename Alloc::const_pointer const_pointer;
 		typedef random_access_iterator iterator;
 		typedef random_access_iterator const_iterator;
-		typedef reverse_iterator< typename ft::vector<T>::iterator > const_reverse_iterator;
-		typedef reverse_iterator< typename ft::vector<T>::iterator > reverse_iterator;
+		typedef reverse_iterator<random_access_iterator> const_reverse_iterator;
+		typedef reverse_iterator<random_access_iterator> reverse_iterator;
 		typedef ptrdiff_t difference_type;
 		typedef size_t size_type;
 
 		/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 		// DEFAULT
-		explicit vector(const allocator_type &alloc = allocator_type()):
-			_alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
+		explicit vector(const allocator_type &alloc = allocator_type()) :
+				_alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
 
 		// FILL
-		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+		explicit vector(size_type n, const value_type &val = value_type(),
+						const allocator_type &alloc = allocator_type())
 				: _alloc(alloc), _size(n), _capacity(capacity(n)) {
 			_array = _alloc.allocate(_capacity);
 			for (size_type i = 0; i < _size ; i++) {

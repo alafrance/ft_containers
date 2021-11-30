@@ -65,7 +65,6 @@ namespace ft {
 		Iterator base() const {
 			return (current);
 		}
-
 		reference operator*() const {
 			Iterator tmp(current);
 			return (*--tmp);

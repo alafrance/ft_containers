@@ -1,27 +1,10 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: alafranc <alafranc@student.42lyon.fr>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/03/23 14:11:52 by alafranc          #+#    #+#              #
-#    Updated: 2021/11/05 14:26:41 by alafranc         ###   ########lyon.fr    #
-#                                                                              #
-# **************************************************************************** #
-
 NAME			= ft_containers
 
-FILES			= main.cpp
+FILES			=  main.cpp
 
-
-INC_CONTAINERS = vector.hpp stack.hpp map.hpp
-INC_ITERATOR	= iterator.hpp random_access_iterator.hpp bidirectional_iterator.hpp
-INC_GENERAL		= metafunctions.hpp pair.hpp utility.hpp RedBlackTree.hpp
-INC_FILES		=	${ addprefix containers/, ${INC_CONTAINERS} }\
- 					${ addprefix iterator/, ${INC_ITERATOR} }\
- 					${INC_GENERAL}
-
+INC_FILES		= containers/map.hpp containers/stack.hpp containers/vector.hpp \
+					iterator/bidirectional_iterator.hpp iterator/iterator.hpp iterator/random_access_iterator.hpp \
+					RedNWARTree.hpp pair.hpp metafunctions.hpp utility.hpp
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
 
@@ -29,36 +12,36 @@ SRC_PATH		= .
 SRC				= $(addprefix ${SRC_PATH}/, ${FILES})
 
 BIN_PATH		= bin
-BIN				= $(SRC:%.cpp=$(BIN_PATH)/%.o)
+BIN 			= $(SRC:%.cpp=$(BIN_PATH)/%.o)
 
 CC				= clang++
 RM				= rm -rf
-FLAGS			= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
-AR				= ar rcs
+FLAGS			= -std=c++98 -Wall -Wextra  -Werror -fsanitize=address -g3
 
-all:  			${NAME}
+all: 			${NAME}
 
 init:
 				@$(shell mkdir -p $(BIN_PATH))
 
-
 $(BIN): $(BIN_PATH)/%.o: %.cpp ${INC}
 				@mkdir -p $(@D)
-				$(CC) $(FLAGS) -c $< -o $@
+				@$(CC) $(FLAGS) -I ${INC_PATH} -o $@ -c $<
+				@printf "\e[?25l\e[J $(NAME) : \e[92m$(notdir $<)\e[0m\r"
 
 ${NAME}: 		init ${BIN}
-				${CC} ${FLAGS} ${BIN} -I ${INC_PATH} -o ${NAME}
-
-test:			${NAME}
-				make -C ../ft_containers_test all
-
-leaks:			${NAME}
-				leaks -atExit -- ./${NAME}
+				@${CC} ${FLAGS} ${BIN} -o ${NAME} -I ${INC_PATH}
+				@printf '\033[?25l\033[J$(NAME) \033[92m✔ \033[0m\033[?25h\n'
 
 clean:
 				@${RM} ${BIN_PATH}
+				@printf '\033[?25l\033[J$(NAME) DELETED \033[92m✔ \033[0m\033[?25h\n'
 
-fclean:			clean
+fclean:
+				@${RM} ${BIN_PATH}
 				@${RM} ${NAME}
+				@printf '\033[?25l\033[J$(NAME) DELETED \033[92m✔ \033[0m\033[?25h\n'
 
 re:				fclean all
+
+.PHONY: all clean fclean re bonus init
+
