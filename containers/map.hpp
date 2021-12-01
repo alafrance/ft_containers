@@ -30,7 +30,7 @@ namespace ft {
 
 			~bidirectional_iterator() {};
 
-			bidirectional_iterator(node<const Key, T> *nodeCopy): _node(nodeCopy) {
+			bidirectional_iterator(node<const Key, T> *nodeCopy): _node(nodeCopy) { //TODO:DOESNT WORK
 				modifyValueType();
 			}
 
@@ -101,7 +101,6 @@ namespace ft {
 					while (_node && _node->left != NULL)
 						_node = _node->left;
 					modifyValueType();
-
 				}
 				return (*this);
 			}
@@ -181,7 +180,7 @@ namespace ft {
 	}
 
 	const_iterator begin() const {
-		return (tree.getRoot());
+		return (tree.minimum());
 	}
 
 	iterator end() {
@@ -191,12 +190,19 @@ namespace ft {
 	const_iterator end() const {
 		return (NULL);
 	}
+
 	reverse_iterator rbegin() {
-		return (reverse_iterator(end()));
+		node<const Key, T> *node = tree.createNode(ft::pair<const Key, T>(0, 0));
+		node->parent = tree.maximum();
+		iterator it(node);
+		return (reverse_iterator(it));
 	}
 
 	const_reverse_iterator rbegin() const {
-		return (reverse_iterator(end()));
+		node<const Key, T> *node = tree.createNode(ft::pair<const Key, T>(0, 0));
+		node->parent = tree.maximum();
+		iterator it(node);
+		return (reverse_iterator(it));
 	}
 
 	reverse_iterator rend() {
@@ -228,6 +234,26 @@ namespace ft {
 	void mydisplay() {
 		tree.display();
 	} //TODO: DELETE JUST FOR TEST
+
+	void clear() {
+		tree.deleteTree(tree.getRoot());
+		tree = NULL;
+		_size = 0;
+	}
+
+	/* ------- OPERATIONS ------- */
+	iterator find (const key_type& k) {
+
+	}
+
+	iterator lower_bound (const key_type& k) {
+
+	}
+
+	const_iterator lower_bound (const key_type& k) const {
+
+	}
+
 	/* ------- GETTERS ------- */
 	allocator_type get_allocator() const {
 		return (_alloc);

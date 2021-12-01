@@ -38,23 +38,28 @@ namespace ft {
 		~node() {}
 	};
 
-	template<typename T, typename U, typename Alloc = std::allocator<ft::pair<T, U> > >
+	template<typename T, typename U, typename Alloc = std::allocator<ft::pair<T, U> >, typename Compare = std::less<T> >
 	class RNWARTree {
 	public:
 		// TYPEDEF
 		typedef typename Alloc::template rebind<node<const T, U> >::other node_alloc_type;
 		typedef node<const T, U> *nodePtr;
-
+	// ---------------- ATTRIBUTES  ----------------
+	private:
+		node_alloc_type _alloc;
+		nodePtr root;
+		Compare _comp;
+	public:
 		// ---------------- CANONICAL FORM ----------------
-		RNWARTree() : _alloc(std::allocator<node<T, U> >()), root(NULL) {}
+		RNWARTree() : _alloc(std::allocator<node<T, U> >()), root(NULL), _comp(std::less<T>()) {}
 
 		explicit RNWARTree(ft::pair<T, U> pair) : _alloc(std::allocator<node<const T, U> >()),
-												  root(_alloc.allocate(1)) {//root(createNode(key, black)) {}
+												  root(_alloc.allocate(1)), _comp(std::less<T>()) {
 			_alloc.construct(root, node<T, U>(pair));
 			root->color = black;
 		}
 
-		RNWARTree(RNWARTree const &tree) : root(NULL) {
+		RNWARTree(RNWARTree const &tree) : _alloc(std::allocator<node<const T, U> >()), root(NULL), _comp(std::less<T>()) {
 			*this = tree;
 		}
 
@@ -157,7 +162,7 @@ namespace ft {
 				return NULL;
 			if (key == node->data.first)
 				return node;
-			if (key < node->data.first)
+			if (_comp(key, node->data.first))
 				find = search_key(node->left, key);
 			else
 				find = search_key(node->right, key);
@@ -167,6 +172,30 @@ namespace ft {
 		nodePtr minimum() {
 			return (minimum(root));
 		}
+		nodePtr maximum() {
+			return (maximum(root));
+		}
+
+	private:
+		nodePtr minimum(nodePtr node) {
+			if (node == NULL)
+				return (NULL);
+			if (node->left == NULL)
+				return (node);
+			else
+				return (minimum(node->left));
+		}
+
+		nodePtr maximum(nodePtr node) {
+			if (node == NULL)
+				return (NULL);
+			if (node->right == NULL)
+				return (node);
+			else
+				return (maximum(node->right));
+		}
+
+	public:
 
 		// ---------------- INSERT  ----------------
 		void insert(nodePtr node, nodePtr add) {
@@ -180,7 +209,7 @@ namespace ft {
 			}
 			if (add == NULL || node == NULL)
 				return;
-			if (add->data.first < node->data.first) {
+			if (_comp(add->data.first, node->data.first)) {
 				if (node->left == NULL) {
 					node->left = add;
 					node->left->parent = node;
@@ -199,15 +228,6 @@ namespace ft {
 
 		// ---------------- INSERT UTILITIES ----------------
 	private:
-		nodePtr minimum(nodePtr node) {
-			if (node == NULL)
-				return (NULL);
-			if (node->left == NULL)
-				return (node);
-			else
-				return (minimum(node->left));
-		}
-
 		void rotate(nodePtr node, e_direction direction) {
 			if (node == NULL || node->parent == NULL)
 				return;
@@ -416,10 +436,6 @@ namespace ft {
 			if (node != NULL)
 				node->parent = uncle->parent;
 		}
-		// ---------------- ATTRIBUTES  ----------------
-	private:
-		node_alloc_type _alloc;
-		nodePtr root;
 	};
 };
 #endif //FT_CONTAINERS_REDNWARTREE_HPP
