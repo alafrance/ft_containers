@@ -21,15 +21,14 @@ namespace ft {
 	template<typename T, typename U>
 	// NODE
 	struct node {
-		ft::pair<T, U> data;
+		ft::pair<const T, U> data;
 		e_color color;
 		node *left;
 		node *right;
 		node *parent;
 
 		// CONSTRUCTOR
-		node(ft::pair<T, U> data) {
-			this->data = data;
+		node(pair<const T, U> &data): data(data) {
 			this->left = NULL;
 			this->right = NULL;
 			this->parent = NULL;
@@ -43,13 +42,13 @@ namespace ft {
 	class RNWARTree {
 	public:
 		// TYPEDEF
-		typedef typename Alloc::template rebind<node<T, U> >::other node_alloc_type;
-		typedef node<T, U> *nodePtr;
+		typedef typename Alloc::template rebind<node<const T, U> >::other node_alloc_type;
+		typedef node<const T, U> *nodePtr;
 
 		// ---------------- CANONICAL FORM ----------------
 		RNWARTree() : _alloc(std::allocator<node<T, U> >()), root(NULL) {}
 
-		explicit RNWARTree(ft::pair<T, U> pair) : _alloc(std::allocator<node<T, U> >()),
+		explicit RNWARTree(ft::pair<T, U> pair) : _alloc(std::allocator<node<const T, U> >()),
 												  root(_alloc.allocate(1)) {//root(createNode(key, black)) {}
 			_alloc.construct(root, node<T, U>(pair));
 			root->color = black;
@@ -78,9 +77,9 @@ namespace ft {
 		}
 		// ---------------- UTILITY COPY / CREATE ----------------
 
-		nodePtr createNode(ft::pair<T, U> pair) {
+		nodePtr createNode(ft::pair<const T, U> pair) {
 			nodePtr tmp = _alloc.allocate(1);
-			_alloc.construct(tmp, node<T, U>(pair));
+			_alloc.construct(tmp, node<const T, U>(pair));
 			return (tmp);
 		}
 
@@ -128,7 +127,7 @@ namespace ft {
 					std::cout << "\e[0;31m";
 				else
 					std::cout << "\e[0;37m";
-				std::cout << root->data.first << "\e[0m" << std::endl;
+				std::cout << root->data.first << "\e[0m" << ", val: " << root->data.second << std::endl;
 				printHelper(root->left, indent, false);
 				printHelper(root->right, indent, true);
 			}
