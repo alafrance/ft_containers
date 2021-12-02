@@ -95,8 +95,8 @@ namespace ft {
 
 		// ---------------- HELPER ----------------
 
-		void insert(ft::pair<T, U> pair) {
-			insert(root, createNode(pair));
+		nodePtr insert(ft::pair<T, U> pair) {
+			return(insert(root, createNode(pair)));
 		}
 
 		void displayOrder() const {
@@ -198,17 +198,18 @@ namespace ft {
 	public:
 
 		// ---------------- INSERT  ----------------
-		void insert(nodePtr node, nodePtr add) {
-			if (search_key(add->data.first)) {
-				std::cerr << "KEY UNIQUE : " << add->data.first << std::endl;
-				return;
-			}
+		nodePtr insert(nodePtr node, nodePtr add) {
+//			if (search_key(add->data.first)) {
+//				std::cerr << "KEY UNIQUE : " << add->data.first << std::endl;
+//				return (NULL);
+//			}
 			if (root == NULL) {
 				root = add;
-				return;
+				root->color = black;
+				return (add);
 			}
 			if (add == NULL || node == NULL)
-				return;
+				return (NULL);
 			if (_comp(add->data.first, node->data.first)) {
 				if (node->left == NULL) {
 					node->left = add;
@@ -224,6 +225,7 @@ namespace ft {
 				} else
 					insert(node->right, add);
 			}
+			return (add);
 		}
 
 		// ---------------- INSERT UTILITIES ----------------
@@ -318,13 +320,20 @@ namespace ft {
 			deleteNode(search_key(key));
 		}
 
+		void ft_delete(nodePtr node) {
+			_alloc.destroy(node);
+			_alloc.deallocate(node,1);
+			node = NULL;
+		}
+
 		void deleteTree(nodePtr node) {
 			if (node == NULL) {
 				return;
 			}
 			deleteTree(node->left);
 			deleteTree(node->right);
-			delete node;
+			ft_delete(node);
+			root = NULL;
 		}
 
 	public:
@@ -370,7 +379,7 @@ namespace ft {
 				deleteFix(nodeDeleteFix, nodeDeleteFixParent);
 			if (root)
 				root->color = black;
-			delete node;
+			ft_delete(node);
 		}
 
 	private:

@@ -2,7 +2,7 @@ NAME			= ft_containers
 
 FILES			=  main.cpp
 
-INC_FILES		= containers/map.hpp containers/stack.hpp containers/vector.hpp \
+INC_FILES		= containers/map.hpp containers/stack.hpp containers/vector.hpp containers/set.hpp \
 					iterator/bidirectional_iterator.hpp iterator/iterator.hpp iterator/random_access_iterator.hpp \
 					RedNWARTree.hpp pair.hpp metafunctions.hpp utility.hpp
 INC_PATH		= .
