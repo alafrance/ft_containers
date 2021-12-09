@@ -51,10 +51,10 @@ namespace ft {
 		Compare _comp;
 	public:
 		// ---------------- CANONICAL FORM ----------------
-		RNWARTree() : _alloc(std::allocator<node<T, U> >()), root(NULL), _comp(std::less<T>()) {}
+		RNWARTree() : _alloc(Alloc()), root(NULL), _comp(Compare()) {}
 
-		explicit RNWARTree(ft::pair<T, U> pair) : _alloc(std::allocator<node<const T, U> >()),
-												  root(_alloc.allocate(1)), _comp(std::less<T>()) {
+		explicit RNWARTree(ft::pair<T, U> pair) : _alloc(Alloc()),
+												  root(_alloc.allocate(1)), _comp(Compare()) {
 			_alloc.construct(root, node<T, U>(pair));
 			root->color = black;
 		}

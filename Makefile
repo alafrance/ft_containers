@@ -1,10 +1,17 @@
 NAME			= ft_containers
 
-FILES			=  main.cpp
 
-INC_FILES		= containers/map.hpp containers/stack.hpp containers/vector.hpp containers/set.hpp \
-					iterator/bidirectional_iterator.hpp iterator/iterator.hpp iterator/random_access_iterator.hpp \
+FILES_TEST		= VectorTest.cpp SetTest.cpp MapTest.cpp displayTest.cpp
+
+FILES			=  $(addprefix tester/, ${FILES_TEST}) \
+				   main.cpp
+
+INC_CONTAINER	= map.hpp stack.hpp vector.hpp set.hpp
+INC_ITERATOR	= bidirectional_iterator.hpp iterator.hpp random_access_iterator.hpp
+INC_FILES		= $(addprefix containers/, ${INC_CONTAINER}) \
+				  $(addprefix iterator/, ${INC_ITERATOR}) \
 					RedNWARTree.hpp pair.hpp metafunctions.hpp utility.hpp
+
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
 

@@ -165,8 +165,7 @@ namespace ft {
 								|| is_same<InputIterator, iterator>::value), InputIterator>::type first, InputIterator last,
 			const key_compare &comp = key_compare(),
 			const allocator_type &alloc = allocator_type()): _alloc(alloc), _comp(comp) {
-			(void) first;
-			(void) last;
+			insert(first, last);
 		}
 
 		map(const map &x) : tree(x.tree), _alloc(x._alloc), _comp(x._comp) {
@@ -390,10 +389,6 @@ namespace ft {
 		/* ------- GETTERS ------- */
 		allocator_type get_allocator() const {
 			return (_alloc);
-		}
-
-		void mydisplay() {
-			tree.display();
 		}
 	};
 }

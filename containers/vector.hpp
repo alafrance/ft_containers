@@ -8,7 +8,9 @@
 #include <cmath>
 #include "../iterator/iterator.hpp"
 #include "../metafunctions.hpp"
+#include "../utility.hpp"
 
+//TODO: SWAP NEED TO MODIFY JUST POINTER
 namespace ft {
 	class OutOfRangeException : public std::exception {
 	public:

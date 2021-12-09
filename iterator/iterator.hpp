@@ -72,7 +72,7 @@ namespace ft {
 
 		// ******* OPERATOR + *******
 		reverse_iterator operator+(difference_type n) const {
-			return (current - n);
+			return reverse_iterator(current - n);
 		}
 
 		reverse_iterator &operator++() { //++a
@@ -93,7 +93,7 @@ namespace ft {
 
 		// ******* OPERATOR - *******
 		reverse_iterator operator-(difference_type n) const {
-			return (current + n);
+			return reverse_iterator(current + n);
 		}
 
 		reverse_iterator &operator--() { //--a
@@ -117,7 +117,7 @@ namespace ft {
 		}
 
 		reference operator[](difference_type n) const {
-			return (current[n]);
+			return *(*this + n);
 		}
 
 		friend bool operator!=(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
