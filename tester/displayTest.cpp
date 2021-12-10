@@ -5,8 +5,7 @@
 #include <iostream>
 
 void displayTestOk() {
-	if (global_error == 0)
-		std::cout << GREEN << "👌 TEST OK 👌" << RESET << std::endl;
+	std::cout << GREEN << "👌 TEST OK 👌" << RESET << std::endl;
 	global_error = 0;
 }
 

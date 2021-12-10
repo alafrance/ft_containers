@@ -45,6 +45,21 @@ namespace ft {
 		typedef typename Alloc::template rebind<node<const T, U> >::other node_alloc_type;
 		typedef node<const T, U> *nodePtr;
 	// ---------------- ATTRIBUTES  ----------------
+		// ---------------- SWAP (NEED FOR MAP AND SET)  ----------------
+		void swap(RNWARTree &tree) {
+			node_alloc_type _allocTmp = _alloc;
+			nodePtr rootTmp = root;
+			Compare _compTmp = _comp;
+
+			_alloc = tree._alloc;
+			root = tree.root;
+			_comp = tree._comp;
+
+			tree._alloc = _allocTmp;
+			tree.root = rootTmp;
+			tree._comp = _compTmp;
+		}
+
 	private:
 		node_alloc_type _alloc;
 		nodePtr root;

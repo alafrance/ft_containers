@@ -17,120 +17,7 @@ namespace ft {
 	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T > >
 	class set : public iterators_traits<iterator<bidirectional_iterator_tag, T> > {
 		/* -------  ITERATOR ------- */
-
-		class bidirectional_iterator : virtual public iterators_traits<iterator<bidirectional_iterator_tag, T > > {
-
-			/* -------  ATTRIBUTES ------- */
-		protected:
-			typedef node<const T, T> * nodePtr;
-			nodePtr _node;
-			typename bidirectional_iterator::pointer _p;
-		public:
-			/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
-
-			/* -------  CANONICAL FORM ------- */
-			bidirectional_iterator() : _node(NULL), _p(0) {};
-
-			~bidirectional_iterator() {};
-
-			bidirectional_iterator(nodePtr nodeCopy): _node(nodeCopy) {
-				modifyValueType();
-			}
-
-			bidirectional_iterator(bidirectional_iterator const &src) {
-				*this = src;
-			}
-
-			bidirectional_iterator &operator=(bidirectional_iterator const &inst) {
-				_p = inst._p;
-				_node = inst._node;
-				return (*this);
-			}
-
-			/* -------  OPERATOR OVERLOAD ------- */
-
-			/* 		-------  RELATIONAL ------- */
-
-			bool operator==(bidirectional_iterator inst) const {
-				return (_p == inst._p);
-			}
-
-			bool operator!=(bidirectional_iterator inst) const {
-				return (_p != inst._p);
-			}
-
-			/* 		------- (INCRE/DECRE)MENT ------- */
-			bidirectional_iterator &operator--() { //--a
-				if (_node == NULL)
-					return (*this);
-				if (_node->left == NULL) {
-					nodePtr parent = _node->parent;
-					while (parent && _node == parent->left) {
-						_node = parent;
-						parent = parent->parent;
-					}
-					_node = parent;
-					modifyValueType();
-					return (*this);
-				} else {
-					_node = _node->left;
-					while (_node && _node->right != NULL)
-						_node = _node->right;
-					modifyValueType();
-				}
-				return (*this);
-			}
-
-			bidirectional_iterator operator--(int) {//a--
-				bidirectional_iterator tmp(*this);
-				operator--();
-				return (tmp);
-			}
-
-			bidirectional_iterator &operator++() { //++a
-				if (_node == NULL)
-					return (*this);
-				if (_node->right == NULL) {
-					nodePtr parent = _node->parent;
-					while (parent && _node == parent->right) {
-						_node = parent;
-						parent = parent->parent;
-					}
-					_node = parent;
-					modifyValueType();
-					return (*this);
-				} else {
-					_node = _node->right;
-					while (_node && _node->left != NULL)
-						_node = _node->left;
-					modifyValueType();
-				}
-				return (*this);
-			}
-
-			bidirectional_iterator operator++(int) {//a++
-				bidirectional_iterator tmp(*this);
-				operator++();
-				return (tmp);
-			}
-
-			/* 		------- REFERENCE / DEREFERENCE ------- */
-			typename bidirectional_iterator::reference operator*() {
-				return *_p;
-			}
-
-			typename bidirectional_iterator::pointer operator->() {
-				return _p;
-			}
-		private:
-			/* 		------- UTILITY ------- */
-			void modifyValueType() {
-				if (_node)
-					_p = &_node->data.second;
-				else
-					_p = NULL;
-			}
-		};
+		#include "../iterator/bidirectional_iterator_set.hpp"
 	public:
 		/* -------  TYPEDEF ------- */
 
@@ -150,7 +37,7 @@ namespace ft {
 		typedef reverse_iterator<iterator> reverse_iterator;
 
 		/* -------  ATTRIBUTES ------- */
-	private:
+	protected:
 		typedef node<const  T, T> * nodePtr;
 		size_type _size;
 		RNWARTree<T, T, Alloc> tree;
@@ -159,18 +46,18 @@ namespace ft {
 	public:
 		/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 		explicit set(const key_compare &comp = key_compare(),
-					 const allocator_type &alloc = allocator_type()) : _alloc(alloc), _comp(comp) {
+					 const allocator_type &alloc = allocator_type()) : _size(0),_alloc(alloc), _comp(comp) {
 		}
 
 		template<class InputIterator>
 		set(typename enable_if<(is_same<InputIterator, pointer>::value
 								|| is_same<InputIterator, iterator>::value), InputIterator>::type first, InputIterator last,
 			const key_compare &comp = key_compare(),
-			const allocator_type &alloc = allocator_type()): _alloc(alloc), _comp(comp) {
+			const allocator_type &alloc = allocator_type()): _size(0),_alloc(alloc), _comp(comp) {
 			insert(first, last);
 		}
 
-		set(const set &x) : tree(x.tree), _alloc(x._alloc), _comp(x._comp) {
+		set(const set &x) : _size(x._size),tree(x.tree), _alloc(x._alloc), _comp(x._comp) {
 		}
 
 		~set() {}
@@ -225,7 +112,7 @@ namespace ft {
 		}
 
 		size_type max_size() const {
-			return (std::numeric_limits<size_t>::max() / sizeof(value_type));
+			return (std::numeric_limits<size_t>::max() / sizeof(node<T, T>));
 		}
 
 		/* ------- MODIFIERS ------- */
@@ -255,7 +142,6 @@ namespace ft {
 		void insert(InputIterator first, typename enable_if<(ft::is_same<InputIterator, typename bidirectional_iterator::pointer>::value || is_same<InputIterator, bidirectional_iterator>::value) && !ft::is_integral<InputIterator>::value, InputIterator>::type last) {
 			for (InputIterator i = first; i != last; i++) {
 				if (!tree.search_key(*i)) {
-					_size++;
 					nodePtr node = tree.search_key(*i);
 					if (!node) {
 						_size++;
@@ -303,10 +189,18 @@ namespace ft {
 		}
 
 		void swap (set& x) {
-			set tmp(*this);
+			tree.swap(x.tree);
+			size_type _sizeTmp = _size;
+			Alloc _allocTmp = _alloc;
+			Compare _compTmp = _comp;
 
-			*this = x;
-			x = tmp;
+			_size = x._size;
+			_alloc = x._alloc;
+			_comp = x._comp;
+
+			x._size = _sizeTmp;
+			x._alloc = _allocTmp;
+			x._comp = _compTmp;
 		}
 
 		/* ------- OBSERVERS ------- */

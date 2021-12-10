@@ -14,46 +14,46 @@ namespace ft {
 		typedef size_t size_type;
 		typedef T value_type;
 
-		explicit stack(const container_type &ctnr = container_type()) : container(ctnr) {}
+	protected:
+		container_type c;
+	public:
+		explicit stack(const container_type &ctnr = container_type()) : c(ctnr) {}
 
-		bool empty() const { return container.empty(); }
+		bool empty() const { return c.empty(); }
 
-		size_type size() const { return container.size(); }
+		size_type size() const { return c.size(); }
 
-		value_type &top() { return container.back(); }
+		value_type &top() { return c.back(); }
 
-		const value_type &top() const { return container.back(); }
+		const value_type &top() const { return c.back(); }
 
-		void push(const value_type &val) { return container.push_back(val); }
+		void push(const value_type &val) { return c.push_back(val); }
 
-		void pop() { return container.pop_back(); }
+		void pop() { return c.pop_back(); }
 
 		friend bool operator==(const stack<T, Container> &lhs, const stack<T, Container> &rhs) {
-			return (lhs.container == rhs.container);
+			return (lhs.c == rhs.c);
 		}
 
 		friend bool operator!=(const stack<T, Container> &lhs, const stack<T, Container> &rhs) {
-			return (lhs.container != rhs.container);
+			return (lhs.c != rhs.c);
 		}
 
 		friend bool operator<(const stack<T, Container> &lhs, const stack<T, Container> &rhs) {
-			return (lhs.container < rhs.container);
+			return (lhs.c < rhs.c);
 		}
 
 		friend bool operator<=(const stack<T, Container> &lhs, const stack<T, Container> &rhs) {
-			return (lhs.container <= rhs.container);
+			return (lhs.c <= rhs.c);
 		}
 
 		friend bool operator>(const stack<T, Container> &lhs, const stack<T, Container> &rhs) {
-			return (lhs.container > rhs.container);
+			return (lhs.c > rhs.c);
 		}
 
 		friend bool operator>=(const stack<T, Container> &lhs, const stack<T, Container> &rhs) {
-			return (lhs.container >= rhs.container);
+			return (lhs.c >= rhs.c);
 		}
-
-	private:
-		container_type container;
 	};
 }
 #endif //FT_CONTAINERS_STACK_HPP

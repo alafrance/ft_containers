@@ -10,7 +10,6 @@
 #include "../metafunctions.hpp"
 #include "../utility.hpp"
 
-//TODO: SWAP NEED TO MODIFY JUST POINTER
 namespace ft {
 	class OutOfRangeException : public std::exception {
 	public:
@@ -38,11 +37,19 @@ namespace ft {
 		typedef reverse_iterator<random_access_iterator> reverse_iterator;
 		typedef ptrdiff_t difference_type;
 		typedef size_t size_type;
-
+		/* -------  ATTRIBUTES ------- */
+	protected:
+		Alloc	_alloc;
+		typename random_access_iterator::pointer _array;
+		size_type _size;
+		size_type _capacity;
+	public:
 		/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 		// DEFAULT
 		explicit vector(const allocator_type &alloc = allocator_type()) :
-				_alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
+				_alloc(alloc), _array(NULL), _size(0), _capacity(0) {
+			std::cout << "Bonsoir Paris" << std::endl;
+		}
 
 		// FILL
 		explicit vector(size_type n, const value_type &val = value_type(),
@@ -365,13 +372,6 @@ namespace ft {
 		size_t 	capacity(size_t n) const {
 			return (n * static_cast<size_t>(roundf(static_cast<float>(2 + (n * 0.1)))));
 		}
-
-		/* -------  ATTRIBUTES ------- */
-	private:
-		Alloc	_alloc;
-		typename random_access_iterator::pointer _array;
-		size_type _size;
-		size_type _capacity;
 	};
 
 	template< class T, class Alloc >
