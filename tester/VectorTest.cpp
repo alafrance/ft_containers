@@ -55,7 +55,6 @@ void testContentOfVector(T content, size_t size) {
 // ------------------ TEST CONSTRUCTOR ------------------
 
 void testConstructorWithDifferentsTypes() {
-	displayLittlePart("Differents Types");
 	library::vector<int> g;
 	EXPECT_EQ(g.empty(), true);
 	EXPECT_EQ(g.size(), (size_t)0);
@@ -71,7 +70,6 @@ void testConstructorWithDifferentsTypes() {
 
 	testContentOfVector(1, 4200);
 	testContentOfVector("blablou", 0);
-	testContentOfVector(true, 4200);
 	testContentOfVector(static_cast<unsigned long long int>(199), 100);
 
 	library::vector<std::string> testVec(2, static_cast<std::string>("coucou"));
@@ -81,16 +79,13 @@ void testConstructorWithDifferentsTypes() {
 
 	int myints[] = {1, 2, 3, 4};
 	library::vector<int> john(myints, myints + 3);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Differents Types") : displayTestError("Differents Types");
+	global_error = 0;
 }
 
 // ------------------ TEST REVERSE_ITERATOR ------------------
 
 void TestReverseIteratorForVector() {
-	displayLittlePart("Basic Test");
 	library::vector<int> vector;   // three ints with a value of 100
 	std::vector<int> svector; // three ints with a value of 100
 	for (int i = 0; i < 10000; ++i)
@@ -125,15 +120,12 @@ void TestReverseIteratorForVector() {
 	EXPECT_TRUE(rit > (rit - 1));
 	EXPECT_FALSE(rit != rit);
 	EXPECT_TRUE(rit != (rit + 1));
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Basic Test") : displayTestError("Basic Test");
+	global_error = 0;
 
 }
 
 void TestReverseConstIterator() {
-	displayLittlePart("Const Reverse Iterator");
 	library::vector<int> vector;  // three ints with a value of 100
 	std::vector<int> svector;         // three ints with a value of 100
 	for (int i = 0; i < 10000; ++i)
@@ -150,10 +142,8 @@ void TestReverseConstIterator() {
 	rit = vector.rbegin();
 	while (rit != vector.rend())
 		EXPECT_EQ(*srit++, *rit++);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Const Reverse Iterator") : displayTestError("Const Reverse Iterator");
+	global_error = 0;
 }
 
 // ------------------ TEST ITERATORS ------------------
@@ -162,7 +152,6 @@ void TestReverseConstIterator() {
 
 void TestIteratorAllOperators()
 {
-	displayLittlePart("Test Iterator All Operators");
 	library::vector<int> myvector;
 	library::vector<int>::iterator it;
 	std::vector<int> stdvector;
@@ -191,16 +180,12 @@ void TestIteratorAllOperators()
 	EXPECT_EQ(*it, *stdit);
 	EXPECT_EQ(*(it + 10), *(stdit + 10));
 	EXPECT_EQ(it[10], stdit[10]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Test Iterator All Operators") : displayTestError("Test Iterator All Operators");
+	global_error = 0;
 }
 
 void TestIteratorWithPairs()
 {
-	displayLittlePart("Test Iterator With Pairs");
-
 	library::vector<std::pair<int, int> > myvector2;
 	library::vector<std::pair<int, int> >::iterator it2;
 	std::vector<std::pair<int, int> > stdvector2;
@@ -213,14 +198,11 @@ void TestIteratorWithPairs()
 	stdit2 = stdvector2.begin();
 	EXPECT_EQ(it2->first, stdit2->first);
 	EXPECT_EQ(it2->second, stdit2->second);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Test Iterator With Pairs") : displayTestError("Test Iterator With Pairs");
+	global_error = 0;
 }
 
 void TestIteratorsWithInverseOperators() {
-	displayLittlePart("Test Iterator With Inverse Operators");
 
 	library::vector<int> myvector;
 	library::vector<int>::iterator it;
@@ -240,15 +222,12 @@ void TestIteratorsWithInverseOperators() {
 	cstdit = stdvector.begin();
 	EXPECT_EQ(*(5 + it), *(5 + stdit));
 	EXPECT_EQ(*(5 + cit), *(5 + cstdit));
-	EXPECT_EQ(it, cit);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+//	stditEXPECT_EQ(it, cit);
+	global_error == 0 ? displayTestOk("Test Iterator With Inverse Operators") : displayTestError("Test Iterator With Inverse Operators");
+	global_error = 0;
 }
 
 void TestRelationalOperator() {
-	displayLittlePart("Basic Test");
 
 	int myint[] = {0, 1, 2, 3, 4};
 	library::vector<int> foo(3, 100);                          // three ints with a value of 100
@@ -268,13 +247,10 @@ void TestRelationalOperator() {
 	EXPECT_TRUE(three < four);
 	EXPECT_FALSE(three >= four);
 	EXPECT_TRUE(three <= four);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Basic Test") : displayTestError("Basic Test");
+	global_error = 0;
 }
 void TestClear() {
-	displayLittlePart("Clear");
 	library::vector<int> myvector;
 	myvector.push_back(100);
 	myvector.push_back(200);
@@ -287,14 +263,11 @@ void TestClear() {
 	EXPECT_EQ(myvector.front(), 1101);
 	EXPECT_EQ(myvector.back(), 2202);
 	EXPECT_EQ(myvector.size(), size_t(2));
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Clear") : displayTestError("Clear");
+	global_error = 0;
 }
 
 void TestSwap() {
-	displayLittlePart("Swap");
 	library::vector<int> myvector;
 	myvector.push_back(100);
 	myvector.push_back(200);
@@ -307,14 +280,11 @@ void TestSwap() {
 	EXPECT_EQ(myvector.front(), 1101);
 	EXPECT_EQ(myvector.back(), 2202);
 	EXPECT_EQ(myvector.size(), size_t(2));
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Swap") : displayTestError("Swap");
+	global_error = 0;
 }
 
 void TestErase() {
-	displayLittlePart("Erase");
 	library::vector<int> myvector;
 
 	// set some values (from 1 to 10)
@@ -328,14 +298,11 @@ void TestErase() {
 	int resultarr[] = {4, 5, 7, 8, 9, 10};
 	for (size_t i = 0; i < myvector.size(); ++i)
 		EXPECT_EQ(myvector[i], resultarr[i]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Erase") : displayTestError("Erase");
+	global_error = 0;
 }
 
 void TestInsert() {
-	displayLittlePart("Insert");
 	library::vector<int> myvector(3, 100);
 	library::vector<int>::iterator it;
 
@@ -358,16 +325,12 @@ void TestInsert() {
 	for (size_t i = 0; i < myvector.size(); ++i)
 		// std::cout << myvector[i] << ", ";
 		EXPECT_EQ(myvector[i], resultarr[i]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Insert") : displayTestError("Insert");
+	global_error = 0;
 }
 
 void TestInsertWithIterators()
 {
-	displayLittlePart("Insert With Iterators");
-
 	library::vector<int> myvector;
 	library::vector<int>::iterator it;
 	std::vector<int> stdvector;
@@ -381,14 +344,11 @@ void TestInsertWithIterators()
 		sit = stdvector.insert(sit, i);
 	}
 	EXPECT_EQ(myvector.back(), *(--(myvector.end())));
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Insert With Iterators") : displayTestError("Insert With Iterators");
+	global_error = 0;
 }
 
 void TestInsertNnumbers() {
-	displayLittlePart("Insert With N numbers");
 
 	library::vector<int> myvector(3, 100);
 	std::vector<int> stdvector(3, 100);
@@ -403,14 +363,11 @@ void TestInsertNnumbers() {
 	EXPECT_EQ(myvector.size(), stdvector.size());
 	for (int i = 0; i < 20; ++i)
 		EXPECT_EQ(myvector[i], stdvector[i]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Insert With N numbers") : displayTestError("Insert With N numbers");
+	global_error = 0;
 }
 
 void TestInsertRange() {
-	displayLittlePart("Insert With range");
 	library::vector<int> myvector, myvector2;
 	library::vector<int>::iterator it;
 	std::vector<int> stdvector, stdvector2;
@@ -431,15 +388,12 @@ void TestInsertRange() {
 	EXPECT_EQ(myvector.size(), stdvector.size());
 	for (int i = 0; i < 20; ++i)
 		EXPECT_EQ(myvector[i], stdvector[i]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Insert With range") : displayTestError("Insert With range");
+	global_error = 0;
 }
 
 
 void TestPushBack() {
-	displayLittlePart("Push Back");
 	library::vector<int> first;
 	library::vector<int> second(1000, 5);
 	library::vector<int> third(second.begin(), second.begin() + 100);
@@ -453,14 +407,11 @@ void TestPushBack() {
 	EXPECT_EQ(first.size(), size_t(3000));
 	EXPECT_EQ(second.size(), size_t(4000));
 	EXPECT_EQ(third.size(), size_t(3100));
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Push Back") : displayTestError("Push Back");
+	global_error = 0;
 }
 
 void TestPopBack() {
-	displayLittlePart("Pop back");
 	library::vector<int> myvector;
 	int sum(0);
 	myvector.push_back(100);
@@ -473,14 +424,11 @@ void TestPopBack() {
 		myvector.pop_back();
 	}
 	EXPECT_EQ(sum, 600);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Pop back") : displayTestError("Pop back");
+	global_error = 0;
 }
 
 void TestAssign() {
-	displayLittlePart("");
 	library::vector<int> first;
 	library::vector<int> second;
 	library::vector<int> third;
@@ -498,10 +446,8 @@ void TestAssign() {
 	EXPECT_EQ(first.size(), size_t(7));
 	EXPECT_EQ(second.size(), size_t(5));
 	EXPECT_EQ(third.size(), size_t(3));
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Assign") : displayTestError("Assign");
+	global_error = 0;
 }
 
 void TestFrontBack() {
@@ -516,12 +462,12 @@ void TestFrontBack() {
 	myvector.front() -= myvector.back();
 	EXPECT_EQ(myvector.front(), 62);
 	EXPECT_EQ(myvector.back(), 16);
+	global_error == 0 ? displayTestOk("Front back") : displayTestError("Front back");
 }
 
 
 
 void TestAt() {
-	displayLittlePart("At");
 	library::vector<int> myvector(10);      // 10 zero-initialized ints
 	bool is_catch = false;
 	// assign some values:
@@ -537,14 +483,11 @@ void TestAt() {
 		is_catch = true;
 	}
 	EXPECT_TRUE(is_catch);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("At") : displayTestError("At");
+	global_error = 0;
 }
 
 void TestOperatorBracket() {
-	displayLittlePart("Bracket Operator");
 	library::vector<int> myvector(10);      // 10 zero-initialized elements
 	std::vector<int> stdvector(10);         // 10 zero-initialized elements
 
@@ -570,14 +513,11 @@ void TestOperatorBracket() {
 
 	for (size_t i = 0; i < sz; i++)
 		EXPECT_EQ(myvector[i], stdvector[i]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Bracket Operator") : displayTestError("Bracket Operator");
+	global_error = 0;
 }
 
 void TestReserve() {
-	displayLittlePart("Test Reserve");
 	library::vector<int> bar;
 	std::vector<int> stdbar;
 	bar.reserve(100);
@@ -601,14 +541,11 @@ void TestReserve() {
 	bar2.push_back(10);
 	stdbar2.push_back(10);
 	EXPECT_EQ(bar2.size(), stdbar2.size());
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Test Reserve") : displayTestError("Test Reserve");
+	global_error = 0;
 }
 
 void TestEmpty() {
-	displayLittlePart("Empty");
 	library::vector<int> myvector;
 	std::vector<int> stdvector;
 
@@ -632,14 +569,11 @@ void TestEmpty() {
 		stdvector.pop_back();
 	}
 	EXPECT_EQ(stdsum, sum);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Empty") : displayTestError("Empty");
+	global_error = 0;
 }
 
 void TestResize() {
-	displayLittlePart("Resize");
 	library::vector<int> myvector;
 
 	// set some initial content:
@@ -657,15 +591,12 @@ void TestResize() {
 	int myarr[] = {1, 2, 3, 4, 5, 100, 100, 100, 0, 0, 0, 0};
 	for (size_t i = 0; i < myvector.size(); ++i)
 		EXPECT_EQ(myvector[i], myarr[i]);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Resize") : displayTestError("Resize");
+	global_error = 0;
 }
 
 
 void TestMaxSize() {
-	displayLittlePart("Max size");
 	library::vector<int> myvector;
 	std::vector<int> stdvector;
 	EXPECT_EQ(myvector.max_size(), stdvector.max_size());
@@ -675,31 +606,29 @@ void TestMaxSize() {
 	library::vector<char> myvector3;
 	std::vector<char> stdvector3;
 	EXPECT_EQ(myvector3.max_size(), stdvector3.max_size());
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Max size") : displayTestError("Max size");
+	global_error = 0;
 }
 
 void testAllVector() {
 	displayPart("VECTOR");
 
-	displayShortPart("CONSTRUCTOR");
+//	displayShortPart("CONSTRUCTOR");
 	testConstructorWithDifferentsTypes();
 
-	displayShortPart("REVERSE ITERATOR");
+//	displayShortPart("REVERSE ITERATOR");
 	TestReverseIteratorForVector();
 	TestReverseConstIterator();
 
-	displayShortPart("ITERATORS");
+//	displayShortPart("ITERATORS");
 	TestIteratorAllOperators();
 	TestIteratorWithPairs();
 	TestIteratorsWithInverseOperators();
 
-	displayShortPart("RELATIONAL OPERATORS");
+//	displayShortPart("RELATIONAL OPERATORS");
 	TestRelationalOperator();
 
-	displayShortPart("FUNCTIONS : ELEMENT ACCESS");
+//	displayShortPart("FUNCTIONS : ELEMENT ACCESS");
 	TestPopBack();
 	TestPushBack();
 	TestFrontBack();
@@ -707,17 +636,17 @@ void testAllVector() {
 	TestAt();
 	TestOperatorBracket();
 
-	displayShortPart("FUNCTIONS : MODIFIERS DELETE");
+//	displayShortPart("FUNCTIONS : MODIFIERS DELETE");
 	TestClear();
 	TestErase();
 
-	displayShortPart("FUNCTIONS : INSERTS");
+//	displayShortPart("FUNCTIONS : INSERTS");
 	TestInsert();
 	TestInsertWithIterators();
 	TestInsertNnumbers();
 	TestInsertRange();
 
-	displayShortPart("FUNCTIONS : CAPACITY");
+//	displayShortPart("FUNCTIONS : CAPACITY");
 	TestSwap();
 	TestReserve();
 	TestEmpty();

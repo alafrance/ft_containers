@@ -36,29 +36,36 @@ namespace ft {
 
 		/* -------  ATTRIBUTES ------- */
 	protected:
-			typedef node<const Key, T> * nodePtr;
-			size_type _size;
-			RNWARTree<Key, T, Alloc> tree;
-			Alloc _alloc;
-			Compare _comp;
+		typedef node<const Key, T> * nodePtr;
+		size_type _size;
+		RNWARTree<Key, T, Alloc> tree;
+		Alloc _alloc;
+		Compare _comp;
+		nodePtr nodeRend;
+
 	public:
 		/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 		explicit map(const key_compare &comp = key_compare(),
-					 const allocator_type &alloc = allocator_type()) : _size(0), _alloc(alloc), _comp(comp) {
+					 const allocator_type &alloc = allocator_type()) : _size(0), _alloc(alloc), _comp(comp), nodeRend(NULL) {
 		}
 
 		template<class InputIterator>
 		map(typename enable_if<(is_same<InputIterator, pointer>::value
 								|| is_same<InputIterator, iterator>::value), InputIterator>::type first, InputIterator last,
 			const key_compare &comp = key_compare(),
-			const allocator_type &alloc = allocator_type()):_size(0),  _alloc(alloc), _comp(comp) {
+			const allocator_type &alloc = allocator_type()):_size(0),  _alloc(alloc), _comp(comp), nodeRend(NULL) {
 			insert(first, last);
 		}
 
-		map(const map &x) : _size(x._size), tree(x.tree), _alloc(x._alloc), _comp(x._comp) {
+		map(const map &x) : _size(x._size), tree(x.tree), _alloc(x._alloc), _comp(x._comp), nodeRend(NULL) {
 		}
 
-		~map() {}
+		~map() {
+			if (nodeRend) {
+				tree.ft_delete(nodeRend);
+				nodeRend = NULL;
+			}
+		}
 
 		/* ------- ITERATORS ------- */
 
@@ -79,16 +86,20 @@ namespace ft {
 		}
 
 		reverse_iterator rbegin() {
-			node<const Key, T> *node = tree.createNode(ft::pair<const Key, T>(0, 0));
-			node->parent = tree.maximum();
-			iterator it(node);
+			if (nodeRend)
+				tree.ft_delete(nodeRend);
+			nodeRend = tree.createNode(ft::pair<const Key, T>(0, 0));
+			nodeRend->parent = tree.maximum();
+			iterator it(nodeRend);
 			return (reverse_iterator(it));
 		}
 
 		const_reverse_iterator rbegin() const {
-			node<const Key, T> *node = tree.createNode(ft::pair<const Key, T>(0, 0));
-			node->parent = tree.maximum();
-			iterator it(node);
+			if (nodeRend)
+				tree.ft_delete(nodeRend);
+			nodeRend = tree.createNode(ft::pair<const Key, T>(0, 0));
+			nodeRend->parent = tree.maximum();
+			iterator it(nodeRend);
 			return (reverse_iterator(it));
 		}
 
@@ -215,11 +226,11 @@ namespace ft {
 		/* ------- OBSERVERS ------- */
 	private:
 		class value_compare {
-			friend class map;
 		protected:
+			typedef pair<const Key, T> value_type;
 			Compare comp;
-			value_compare (Compare c) : comp(c) {}
 		public:
+			value_compare (Compare c) : comp(c) {}
 			bool operator() (const value_type& x, const value_type& y) const {
 				return comp(x.first, y.first);
 			}

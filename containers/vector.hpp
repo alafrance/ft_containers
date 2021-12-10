@@ -47,15 +47,14 @@ namespace ft {
 		/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 		// DEFAULT
 		explicit vector(const allocator_type &alloc = allocator_type()) :
-				_alloc(alloc), _array(NULL), _size(0), _capacity(0) {
-			std::cout << "Bonsoir Paris" << std::endl;
-		}
+				_alloc(alloc), _array(NULL), _size(0), _capacity(0) {}
 
 		// FILL
 		explicit vector(size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type())
 				: _alloc(alloc), _size(n), _capacity(capacity(n)) {
-			_array = _alloc.allocate(_capacity);
+			if (_capacity != 0)
+				_array = _alloc.allocate(_capacity);
 			for (size_type i = 0; i < _size ; i++) {
 				_alloc.construct(&_array[i], val);
 			}
@@ -72,7 +71,8 @@ namespace ft {
 				_size++;
 			}
 			_capacity = capacity(_size);
-			_array = _alloc.allocate(_capacity);
+			if (_capacity != 0)
+				_array = _alloc.allocate(_capacity);
 			size_type i = 0;
 			for (InputIterator it = first; it != last ; it++) {
 				_alloc.construct(&_array[i++], *it);
@@ -94,7 +94,8 @@ namespace ft {
 			clear();
 			_alloc = inst._alloc;
 			_capacity = inst._capacity;
-			_array = _alloc.allocate(_capacity);
+			if (_capacity != 0)
+				_array = _alloc.allocate(_capacity);
 			insert(begin(), inst.begin(), inst.end());
 			return (*this);
 		};

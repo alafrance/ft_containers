@@ -4,6 +4,8 @@
 
 #ifndef FT_CONTAINERS_ITERATOR_HPP
 #define FT_CONTAINERS_ITERATOR_HPP
+#include <cstddef>
+#include <iostream>
 namespace ft {
 	// TODO Add iterators_traits
 	struct random_access_iterator_tag {

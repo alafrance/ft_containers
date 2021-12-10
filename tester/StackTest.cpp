@@ -7,32 +7,27 @@
 #include "../containers/vector.hpp"
 #include "../containers/stack.hpp"
 #include <deque>
+#include <vector>
+#include <stack>
 
 void TestConstructorAndSize() {
-	displayLittlePart("Test Constructors And Size");
-	ft::vector<int> myvector (2,200);        // vector with 2 elements
-	std::deque<int> mydeque (3,100);          // deque with 3 elements
+	std::deque<int> mydeque (2,200);        // vector with 2 elements
 
-	ft::stack<int> first;                    // empty stack
-	ft::stack<int> second (myvector);         // stack initialized to copy of deque
+	library::stack<int> first;                    // empty stack
 
-	ft::stack<int,ft::vector<int> > third;  // empty stack using vector
-	ft::stack<int,std::deque<int> > fourth (mydeque);
+	library::stack<int,library::vector<int> > second;  // empty stack using vector
+	library::stack<int,std::deque<int> > third (mydeque);
 	EXPECT_EQ(static_cast<int>(first.size()), 0);
-	EXPECT_EQ(static_cast<int>(second.size()), 2);
-	EXPECT_EQ(static_cast<int>(third.size()), 0);
-	EXPECT_EQ(static_cast<int>(fourth.size()), 3);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	EXPECT_EQ(static_cast<int>(second.size()), 0);
+	EXPECT_EQ(static_cast<int>(third.size()), 3);
+	global_error == 0 ? displayTestOk("Test Constructors And Size") : displayTestError("Test Constructors And Size");
+	global_error = 0;
+
 }
 
 void TestEmptyPopAndPush() {
-	displayLittlePart("Empty, Pop and Push");
 	ft::stack<int> mystack;
 	ft::stack<int> stdstack;
-
 	int sum = 0;
 	int stdsum = 0;
 
@@ -53,15 +48,13 @@ void TestEmptyPopAndPush() {
 		stdstack.pop();
 	}
 	EXPECT_EQ(stdsum, sum);
-	if (global_error == 0)
-		displayTestOk();
-	else
-		global_error = 0;
+	global_error == 0 ? displayTestOk("Empty, Pop and Push") : displayTestError("Empty, Pop and Push");
+	global_error = 0;
 }
 
 void testAllStack() {
 	displayPart("Stack");
-	displayShortPart("STACK FUNCTIONS");
+//	displayShortPart("STACK FUNCTIONS");
 	TestConstructorAndSize();
 	TestEmptyPopAndPush();
 }

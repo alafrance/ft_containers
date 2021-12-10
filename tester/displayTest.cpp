@@ -3,22 +3,23 @@
 //
 #include "tester.hpp"
 #include <iostream>
+static int countTest = 1;
+void displayTestOk(std::string msg) {
+	std::cout << GREEN << "✅️️️ " << countTest++ << " OK : " << msg << RESET << std::endl;
+	global_error = 0;
+}
 
-void displayTestOk() {
-	std::cout << GREEN << "👌 TEST OK 👌" << RESET << std::endl;
+void displayTestError(std::string msg) {
+	std::cout << RED << "🔴" << countTest++ << "ERROR : " << msg << RESET << std::endl;
 	global_error = 0;
 }
 
 void displayPart(std::string msg) {
-	std::cout << "------------------- " << msg << " -------------------" << std::endl;
+	std::cout << BLUE << "------------------- " << msg << " -------------------" << RESET << std::endl;
 }
 
 void displayShortPart(std::string msg) {
-	std::cout << "\n-------- " << msg << " --------" << std::endl;
-}
-
-void displayLittlePart(std::string msg) {
-	std::cout << "--- " << msg << " ---" << std::endl;
+	std::cout << BLUE << "\n-------- " << msg << " --------" << RESET << std::endl;
 }
 
 void displayMsgError(e_error error) {

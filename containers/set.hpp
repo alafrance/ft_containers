@@ -43,24 +43,30 @@ namespace ft {
 		RNWARTree<T, T, Alloc> tree;
 		Alloc _alloc;
 		Compare _comp;
+		nodePtr nodeRend;
 	public:
 		/* -------  CONSTRUCTOR AND DESTRUCTOR ------- */
 		explicit set(const key_compare &comp = key_compare(),
-					 const allocator_type &alloc = allocator_type()) : _size(0),_alloc(alloc), _comp(comp) {
+					 const allocator_type &alloc = allocator_type()) : _size(0),_alloc(alloc), _comp(comp), nodeRend(NULL) {
 		}
 
 		template<class InputIterator>
 		set(typename enable_if<(is_same<InputIterator, pointer>::value
 								|| is_same<InputIterator, iterator>::value), InputIterator>::type first, InputIterator last,
 			const key_compare &comp = key_compare(),
-			const allocator_type &alloc = allocator_type()): _size(0),_alloc(alloc), _comp(comp) {
+			const allocator_type &alloc = allocator_type()): _size(0),_alloc(alloc), _comp(comp), nodeRend(NULL) {
 			insert(first, last);
 		}
 
-		set(const set &x) : _size(x._size),tree(x.tree), _alloc(x._alloc), _comp(x._comp) {
+		set(const set &x) : _size(x._size),tree(x.tree), _alloc(x._alloc), _comp(x._comp), nodeRend(NULL) {
 		}
 
-		~set() {}
+		~set() {
+			if (nodeRend) {
+				tree.ft_delete(nodeRend);
+				nodeRend = NULL;
+			}
+		}
 
 		/* ------- ITERATORS ------- */
 
@@ -81,9 +87,11 @@ namespace ft {
 		}
 
 		reverse_iterator rbegin() {
-			nodePtr node = tree.createNode(ft::pair<T, T>(0, 0));
-			node->parent = tree.maximum();
-			iterator it(node);
+			if (nodeRend)
+				tree.ft_delete(nodeRend);
+			nodeRend = tree.createNode(ft::pair<T, T>(0, 0));
+			nodeRend->parent = tree.maximum();
+			iterator it(nodeRend);
 			return (reverse_iterator(it));
 		}
 
@@ -205,14 +213,15 @@ namespace ft {
 
 		/* ------- OBSERVERS ------- */
 		class value_compare {
-			friend class set;
 		protected:
+			typedef T value_type;
 			Compare comp;
-			value_compare (Compare c) : comp(c) {}
 		public:
 			bool operator() (const value_type& x, const value_type& y) const {
 				return comp(x, y);
 			}
+
+			value_compare (Compare c) : comp(c) {}
 		};
 
 		key_compare key_comp() const {

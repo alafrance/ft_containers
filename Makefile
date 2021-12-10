@@ -1,11 +1,18 @@
 NAME			= ft_containers
 
-FILES			= tester/SetTest.cpp tester/MapTest.cpp tester/displayTest.cpp  tester/StackTest.cpp tester/googleTestLike.cpp tester/VectorTest.cpp
+
+FILES_TESTER	= SetTest.cpp MapTest.cpp displayTest.cpp StackTest.cpp googleTestLike.cpp VectorTest.cpp
+FILES			= main.cpp $(addprefix tester/, ${FILES_TESTER})
 
 
 INC_CONTAINER	= map.hpp stack.hpp vector.hpp set.hpp
 INC_ITERATOR	= bidirectional_iterator_map.hpp bidirectional_iterator_set.hpp iterator.hpp random_access_iterator.hpp
-INC_FILES		= $(addprefix containers/, ${INC_CONTAINER}) $(addprefix iterator/, ${INC_ITERATOR}) RedNWARTree.hpp pair.hpp metafunctions.hpp utility.hpp
+INC_TESTER		= tester.hpp
+INC_FILES		= $(addprefix containers/, ${INC_CONTAINER}) \
+					$(addprefix iterator/, ${INC_ITERATOR})\
+					$(addprefix tester/, ${INC_TESTER})\
+					RedNWARTree.hpp pair.hpp metafunctions.hpp utility.hpp
+
 
 INC_PATH		= .
 INC				= $(addprefix ${INC_PATH}/, ${INC_FILES})
@@ -23,6 +30,12 @@ FLAGS			= -std=c++98 -Wall -Wextra  -Werror #-fsanitize=address -g3
 all: 			${NAME}
 
 init:
+				@$(shell sed -i -e 's/namespace library = std;/namespace library = ft;/' tester/tester.hpp)
+				@${RM} tester/tester.hpp-e
+				@$(shell mkdir -p $(BIN_PATH))
+init_std:
+				@$(shell sed -i -e 's/namespace library = ft;/namespace library = std;/' tester/tester.hpp)
+				@${RM} tester/tester.hpp-e
 				@$(shell mkdir -p $(BIN_PATH))
 
 $(BIN): $(BIN_PATH)/%.o: %.cpp ${INC}
@@ -32,9 +45,11 @@ $(BIN): $(BIN_PATH)/%.o: %.cpp ${INC}
 
 ${NAME}: 		init ${BIN}
 				@${CC} ${FLAGS} ${BIN} -o ${NAME} -I ${INC_PATH}
-				@${CC} ${FLAGS} ${BIN} -o std_containers -I ${INC_PATH}
 				@printf '\033[?25l\033[J$(NAME) \033[92m✔ \033[0m\033[?25h\n'
 
+std:			init_std ${BIN}
+				@${CC} ${FLAGS} ${BIN} -o std_containers -I ${INC_PATH}
+				@printf '\033[?25l\033[J$(NAME) \033[92m✔ \033[0m\033[?25h\n'
 clean:
 				@${RM} ${BIN_PATH}
 				@printf '\033[?25l\033[J$(NAME) DELETED \033[92m✔ \033[0m\033[?25h\n'

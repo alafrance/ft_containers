@@ -1,5 +1,5 @@
 #include "tester/tester.hpp"
-// TODO: LEAKS, AND REPLACE LINE NAMESPACE LIBRARY = FT TO STD WITH ANOTHER LIBRARY
+#include "containers/set.hpp"
 int  main() {
 	const clock_t begin_time = clock();
 	global_error = 0;
@@ -7,10 +7,11 @@ int  main() {
 	std::cout << std::endl << std::endl;
 	testAllStack();
 	std::cout << std::endl << std::endl;
-	testAllMap();
+	testAllMap(); // 2 LEAKS
 	std::cout << std::endl << std::endl;
-	testAllSet();
+	testAllSet(); // 1 LEAKS
+	std::cout << std::endl << std::endl;
 	float time = float(clock () - begin_time) / CLOCKS_PER_SEC;
-	std::cout << "TIME : " << time << std::endl;
-	std::cout << "MAX TIME FOR FT : " << time * 20 << std::endl;
+	std::cout << "time executed: " << time << "s" << std::endl;
+	std::cout << "max time for ft : " << time * 20 << "s" << std::endl;
 }
