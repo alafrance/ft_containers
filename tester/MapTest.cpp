@@ -273,24 +273,20 @@ void TestMaxSizeMap() {
 void testAllMap() {
 	displayPart("Map");
 
-//	displayShortPart("Constructor");
 	TestConstructor();
 
-//	displayShortPart("Iterators");
 	TestIteratorMap();
 	TestReverseIteratorMap();
 
-//	displayShortPart("Functions : Capacity");
 	TestMaxSizeMap();
-//	displayShortPart("Functions : Modifiers");
+
 	TestSwapMap();
 	TestEmptyAndEraseMap();
 	TestClearMap();
 	TestInsertMap();
 	TestInsertIteratorMap();
 
-//	displayShortPart("Functions : Operations");
 	TestFindAndEraseMap();
-//	displayShortPart("Functions : Equal-Upper-Lower Bounds");
+
 	TestEqualUpperLowerBounds();
 }
