@@ -14,7 +14,7 @@
 static int global_error = 0;
 enum e_error {e_none, e_same_type, e_equal, e_nequal, e_false, e_true};
 namespace ft{}
-namespace library = ft;
+namespace library = std;
 // displayTest
 void displayTestOk(std::string msg);
 void displayTestError(std::string msg);
